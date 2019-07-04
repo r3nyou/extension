@@ -1,0 +1,24 @@
+{
+  "name": "Block Extensions",
+  "description" : "Base Level Extension",
+  "version": "1.0",
+  "background": {
+    "scripts": ["js/block.js"]
+  },
+  "permissions": [
+    "storage",
+    "webRequest",
+    "<all_urls>",
+    "webRequestBlocking"
+  ],
+  "manifest_version": 2,
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F",
+        "mac": "MacCtrl+Shift+F"
+      },
+      "description": "Opens hello.html"
+    }
+  }
+}
