@@ -9,9 +9,10 @@ class Block {
 		var redirect = "https://www.google.com.tw/";
 
 		var whiteList = [
-			"google.com",
-			"youtube.com",
-			"mozilla.org"
+			"google",
+			"newtab",
+			"extension",
+			"youtube"
 		]; 
 
 		this.blackUrl = blackList;
@@ -20,43 +21,24 @@ class Block {
 	}
 	
 	blackList() {
-		chrome.webRequest.onBeforeRequest.addListener((details) => {				
-			console.log(details);
+		chrome.webRequest.onBeforeRequest.addListener((details) => {			
 			return {redirectUrl: this.urlRedirect};
 		},
 		{urls: this.blackUrl},
 		["blocking"]);
 	}
 
-	whiteList() {
-		
-		chrome.webRequest.onBeforeRequest.addListener((details) => {
-		
-
-			var isWhite = this.whiteUrl.some((url) => {
-				if (details.initiator != undefined) {
-					//console.log(details.initiator.indexOf(url));
-					if (details.initiator.indexOf(url) !== -1) {
-						
-						return true;
-					} else {
-						return false;
-					}										
-				} else {
-					return true;
-				}				
-			});
-
-			//console.log(isWhite);
-			if (!isWhite) {
-				return {redirectUrl: this.urlRedirect};				
-			} else {
-				return {cancel : false};
+	whiteList() {		
+		chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {		
+			if (changeInfo.url) {
+				var isWhite = this.whiteUrl.some((url) => {
+					return changeInfo.url.indexOf(url) != -1;
+				});				
+				if (!isWhite) {
+					chrome.tabs.update({url: this.urlRedirect});
+				}
 			}
-			//return {cancel : false}
-		},
-		{urls: ["<all_urls>"]},
-		["blocking"]);		
+		}); 
 	}
 }
 
