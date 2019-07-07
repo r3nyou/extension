@@ -43,4 +43,4 @@ class Block {
 }
 
 block = new Block();
-block.whiteList();
+//block.whiteList();
