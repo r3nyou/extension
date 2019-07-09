@@ -6,7 +6,7 @@
     "scripts": [
       "js/Block.js",
       "js/ContextMenus.js",
-      "js/Storage.js"
+      "js/User.js"
     ]
   },
   "browser_action": {
