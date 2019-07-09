@@ -4,9 +4,13 @@
   "version": "1.0",
   "background": {
     "scripts": [
-      "js/block.js",
-      "js/contextMenus.js"
+      "js/Block.js",
+      "js/ContextMenus.js",
+      "js/Storage.js"
     ]
+  },
+  "browser_action": {
+    "default_popup": "popup.html"
   },
   "permissions": [
     "storage",
@@ -14,7 +18,8 @@
     "<all_urls>",
     "webRequestBlocking",
     "tabs",
-    "contextMenus"
+    "contextMenus",
+    "storage"
   ],
   "manifest_version": 2
 }
