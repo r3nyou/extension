@@ -1,9 +1,19 @@
 {
-  "name": "Block Extensions",
+  "name": "磚注",
   "description" : "Base Level Extension",
   "version": "1.0",
   "background": {
-    "scripts": ["js/block.js"]
+    "scripts": ["js/block.js","js/alarm.js"]
+  },
+  "options_page": "options.html",
+	"options_ui": {
+	"open_in_tab": true,
+	"chrome_style": true,  
+	"page": "options.html" 
+  },
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
   },
   "permissions": [
     "storage",
