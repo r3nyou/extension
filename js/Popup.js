@@ -1,18 +1,5 @@
 var storage = chrome.storage.sync;
 
-$('#btnSubmit').click(function() {    
-    getStorage();
-});
-
-$('#btnSet').click(function() {
-    setStorage();
-});
-
-$('#btnClear').click(function() {    
-    chrome.storage.sync.clear(function() {        
-    });
-});
-
 function setStorage() {
 	var value = $('#password').val();
 	storage.set({'userID': value}, function() {
@@ -31,3 +18,16 @@ function getStorage() {
 		}
 	});
 }
+
+$('#btnSubmit').click(function() {    
+    getStorage();
+});
+
+$('#btnSet').click(function() {
+    setStorage();
+});
+
+$('#btnClear').click(function() {    
+    chrome.storage.sync.clear(function() {        
+    });
+});
