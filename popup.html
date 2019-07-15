@@ -5,15 +5,17 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Getting Started Extension's Popup</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/2.3.0/css/flat-ui.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/2.3.0/css/flat-ui.css">
 	<style type="text/css">
 		body {
 			margin: 10px;
 			width: 500px;
 		}
+
 		demo-tiles {
 			margin: 200px;
 		}
+
 		h1 {
 			font-size: 15px;
 		}
@@ -24,23 +26,19 @@
 			justify-content: space-between;
 		}
 	</style>
-	
+
 </head>
 
-	<body>
-		<div id="mes">Background Color Changer</div>
-		<div class="tile">
-		  <span>Choose a color</span>
-		  <a id="btn_start" class="btn btn-primary btn-large btn-block"><span class="fui-home"></span>開始</a>
-		  
-		  <!-- <select id="dropdown">
-			<option selected disabled hidden value=''></option>
-			<option value="white">White</option>
-			<option value="pink">Pink</option>
-			<option value="green">Green</option>
-			<option value="yellow">Yellow</option>
-		  </select> -->
-		</div>
-		<script src="js/popup.js"></script>
-	</body>
+<body>
+	<div id="mes">Background Mes</div>
+	<div class="tile">
+		<button id="time_--" class="btn btn-primary btn-large btn-block">＜</button>
+		<span id="forDelayInMinutes">25</span>
+		<button id="time_++" class="btn btn-primary btn-large btn-block">＞</button>
+		<br>
+		<button id="btn_start" class="btn btn-primary btn-large btn-block"><span class="fui-home"></span>開始</button>
+	</div>
+	<script type="text/javascript" src="popup.js"></script>
+</body>
+
 </html>
