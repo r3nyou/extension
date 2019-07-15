@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
 </head>
 <body>
+  <div id="loginMode" style="display: block;">
     <div class="container">
       <div class="row">
         <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
@@ -29,7 +30,7 @@
                   <input type="checkbox" class="custom-control-input" id="customCheck1">
                   <label class="custom-control-label" for="customCheck1">Remember password</label>
                 </div>-->
-                <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in</button>
+                <input id="btnLogin" class="btn btn-lg btn-primary btn-block text-uppercase" readonly="readonly" value="Sign in">
                 <hr class="my-4">
                 <!--<button class="btn btn-lg btn-google btn-block text-uppercase" type="submit"><i class="fab fa-google mr-2"></i> Sign in with Google</button>-->
               </form>
@@ -38,5 +39,12 @@
         </div>
       </div>
     </div>
-  </body>
+  </div>
+
+  <div id="optionMode" style="display: none;">
+    <h1>設定頁面</h1>
+  </div>
+  <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="js/Options.js"></script>  
+</body>
 </html>

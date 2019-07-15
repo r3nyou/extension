@@ -7,8 +7,8 @@
 </head>
 <body>
 
-<div class="wrapper">
-<form class="form-signin">
+<div id="loginMode" class="wrapper" style="display: block;">
+<div class="form-signin">
     <h2 class="form-signin-heading">Please login</h2><br>
     <!--<input type="text" class="form-control" name="username" placeholder="Email Address" required="" autofocus="" />-->
     <input id="password" type="password" class="form-control" name="password" placeholder="Password" required=""/><br>
@@ -18,7 +18,11 @@
     <button id="btnSubmit" class="btn btn-primary btn-block" type="submit">Login</button>   
     <button id="btnSet" class="btn btn-success btn-block" type="">Set</button>   
     <button id="btnClear" class="btn btn-danger btn-block" type="">Clear</button> 
-</form>
+</div>
+</div>
+
+<div id="startMode" style="display: none;">
+    開始
 </div>
 <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="js/ContextMenus.js"></script>

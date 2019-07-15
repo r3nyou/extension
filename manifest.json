@@ -4,9 +4,10 @@
   "version": "1.0",
   "background": {
     "scripts": [
+      "js/jquery-3.4.1.min.js",
       "js/Block.js",
       "js/ContextMenus.js",
-      "js/User.js"
+      "js/ajax.js"
     ]
   },
   "browser_action": {
@@ -17,6 +18,7 @@
     "storage",
     "webRequest",
     "<all_urls>",
+    "http://localhost/",
     "webRequestBlocking",
     "tabs",
     "contextMenus",
