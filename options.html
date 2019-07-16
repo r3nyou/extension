@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
 </head>
 <body>
-  <div id="loginMode" style="display: block;">
+  <div id="loginMode" style="display: none;">
     <div class="container">
       <div class="row">
         <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
@@ -41,8 +41,36 @@
     </div>
   </div>
 
-  <div id="optionMode" style="display: none;">
-    <h1>設定頁面</h1>
+  <div id="optionMode" style="display: block;">
+    <div id="menu" class="menu">
+			<div class="title">
+				<div class="min_picture"></div>
+				<span>磚注</span>
+			</div>
+			<ul>
+				<li>設定(黑白名單)</li>
+				<li>
+          密碼(保護)設定
+          <input id="password" type="password" class="" name="password" placeholder="Password"/> 
+          <button id="btnSet" class="btn btn-success" type="">Set</button>
+          <button id="btnClear" class="btn btn-success" type="">Clear</button>
+        </li>
+				<li>城鎮</li>
+				<li>說明頁面</li>
+			</ul>
+			<label class="switch">
+				<input type="checkbox" checked>
+				<span class="slider round"></span>
+			</label>
+			<font size="6">封鎖成人網站</font>
+			<label class="switch">
+				<input type="checkbox" checked>
+				<span class="slider round"></span>
+			</label>
+			<font size="6">啟動右鍵功能表</font>
+		</div>
+		<div id="content" class="content">
+		</div>
   </div>
   <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="js/Options.js"></script>  

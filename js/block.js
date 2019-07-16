@@ -30,9 +30,7 @@ class Block {
 		["blocking"]);
 	}
 
-	whiteList() {	
-		
-
+	whiteList() {
 		chrome.tabs.onHighlighted.addListener((tabIds) => {
 			chrome.tabs.query({
 				active: true,
@@ -66,4 +64,4 @@ class Block {
 }
 
 block = new Block();
-block.whiteList();
+//block.whiteList();
