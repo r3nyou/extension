@@ -1,6 +1,6 @@
 var storage = chrome.storage.sync;
 
-function setPWtoDB() {
+function setPWtoDB(password) {
 
     chrome.storage.sync.get("id", function(storage) {        
         if(storage.id === undefined) { 
@@ -8,7 +8,7 @@ function setPWtoDB() {
         } else {            
             var postData = JSON.stringify({
                 "id": storage.id,
-                "password": $('#password').val(),
+                "password": password,
                 "email": ""
             });
         
@@ -74,11 +74,11 @@ function login() {
 }
 
 $('#btnSet').click(function() {    
-    setPWtoDB();
+    setPWtoDB( $('#password').val() );
 });
 
 $('#btnClear').click(function() {    
-    chrome.storage.sync.clear("password" , function() {        
+    chrome.storage.sync.remove("password" , function() {        
     });
 });
 
