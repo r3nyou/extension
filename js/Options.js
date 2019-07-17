@@ -49,15 +49,14 @@ function getStorage() {
 
 function getPW() {
     chrome.storage.sync.get("password", function(storage) {        
-        if(storage.password === undefined) { 
-            //setIDtoDB();
+        if(storage.password === undefined) {            
             alert('還沒設定密碼');
             $("#loginMode").css("display", "none");
             $("#startMode").css("display", "block");
         } else {
             alert('密碼是: ' + storage.password);
-            $("#loginMode").css("display", "block");
-            $("#startMode").css("display", "none");
+            $('#loginMode').show();
+            $('#optionMode').hide();
         }
     });
 }
@@ -66,7 +65,7 @@ function login() {
     chrome.storage.sync.get("password", function(storage) {        
         if(storage.password == $('#inputPassword').val()) { 
             $("#loginMode").css("display", "none");
-            $("#startMode").css("display", "block");
+            $("#optionMode").css("display", "block");
         } else {
             alert('Wrong Password!');
         }
