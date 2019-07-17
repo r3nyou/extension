@@ -15,11 +15,12 @@ class Block {
 			"youtube"
 		]; 
 
+		this.blockIt = false;
 		this.blackUrl = blackList;
 		this.urlRedirect = redirect;		
 		this.whiteUrl = whiteList;
 
-		this.highlight = false;
+		//this.highlight = false;
 	}
 	
 	blackList() {
@@ -32,36 +33,44 @@ class Block {
 
 	whiteList() {
 		chrome.tabs.onHighlighted.addListener((tabIds) => {
-			chrome.tabs.query({
-				active: true,
-				lastFocusedWindow: true
-			}, (tabs) => {				
-				var tab = tabs[0];
-				
-				var isWhite = this.whiteUrl.some((url) => {
-					return tab.url.indexOf(url) != -1;
-				});				
-				if (!isWhite) {
-					this.highlight = true;
-					chrome.tabs.update({url: this.urlRedirect});
-				}
-			});
+			if (this.blockIt == true) {
+				chrome.tabs.query({
+					active: true,
+					lastFocusedWindow: true
+				}, (tabs) => {				
+					var tab = tabs[0];
+					
+					var isWhite = this.whiteUrl.some((url) => {
+						return tab.url.indexOf(url) != -1;
+					});				
+					if (!isWhite) {
+						//this.highlight = true;
+						chrome.tabs.update({url: this.urlRedirect});
+					}
+				});
+			}
 		});
 	
 		chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {			
-			if (changeInfo.url && this.highlight == false) {
-				var isWhite = this.whiteUrl.some((url) => {
-					return changeInfo.url.indexOf(url) != -1;
-				});				
-				if (!isWhite) {
-					chrome.tabs.update({url: this.urlRedirect});
-				}
-			} else {
-				this.highlight = true;
+			if (this.blockIt == true) {
+				chrome.tabs.query({
+					currentWindow: true,
+					highlighted:true
+				}, (tabs) => {
+					var tab = tabs[0];
+					if (changeInfo.url == tab.url ) {
+						var isWhite = this.whiteUrl.some((url) => {
+							return changeInfo.url.indexOf(url) != -1;
+						});
+						if (!isWhite) {
+							chrome.tabs.update({ url: this.urlRedirect });
+						}
+					}
+				});
 			}
 		});
 	}
 }
 
 block = new Block();
-//block.whiteList();
+block.whiteList();
