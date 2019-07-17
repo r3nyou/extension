@@ -141,14 +141,6 @@
     cursor: pointer;
   }
 
-  #loginMode {
-    display: none;
-  }
-
-  #optionMode {
-    display: block;
-  }
-
    /*by Lin
   -------------------------------------------------- */
   .menu {

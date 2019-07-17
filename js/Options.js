@@ -52,11 +52,11 @@ function getPW() {
         if(storage.password === undefined) {            
             alert('還沒設定密碼');
             $("#loginMode").css("display", "none");
-            $("#startMode").css("display", "block");
+            $("#optionMode").css("display", "block");
         } else {
             alert('密碼是: ' + storage.password);
-            $('#loginMode').show();
-            $('#optionMode').hide();
+            $("#loginMode").css("display", "block");
+            $("#optionMode").css("display", "none");
         }
     });
 }
