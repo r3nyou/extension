@@ -4,8 +4,8 @@
   }
   
   body {
-    background: #007bff;
-    background: linear-gradient(to right, #0062E6, #33AEFF);
+    /*background: #007bff;
+    background: linear-gradient(to right, #0062E6, #33AEFF);*/
   }
   
   .card-signin {
@@ -134,15 +134,39 @@
     }
   }
 
-  /* modified
+  /* modified by jian
   -------------------------------------------------- */
  
   #btnLogin:hover {
     cursor: pointer;
   }
 
+  /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+  .row.content {/*height: 1500px*/}
+  
+  /* Set gray background color and 100% height */
+  .sidenav {
+    background-color: #f1f1f1;
+    height: 100vh;
+    overflow-y: auto; 
+  }    
+  
+  /* On small screens, set height to 'auto' for sidenav and grid */
+  @media screen and (max-width: 767px) {
+    .sidenav {
+      height: auto;
+      padding: 15px;
+    }
+    .row.content {height: auto;} 
+  }
+
+  .optionsContent {
+    height: 100vh;
+    overflow-y: auto; 
+  }
+
    /*by Lin
-  -------------------------------------------------- */
+  -------------------------------------------------- 
   .menu {
     height: 100vh;
     width: 20vw;
@@ -224,7 +248,7 @@
     transform: translateX(26px);
   }
   
-  /* Rounded sliders */
+  
   .slider.round {
     border-radius: 34px;
   }
@@ -232,3 +256,4 @@
   .slider.round:before {
     border-radius: 50%;
   }
+  */
