@@ -7,42 +7,52 @@ var storage = chrome.storage.sync;
 // 	});
 // }
 
-function getStorage() {
-	storage.get('userID', function(items) {
-		if (items.userID) {
-            if (items.userID == $('#password').val()) {
-                $("#loginMode").css("display", "none");
-                $("#startMode").css("display", "block");
-            } else {
-                alert('wrong password');
-            }            
-		}
-	});
-}
-
-function test() {
-    chrome.extension.sendMessage({'id': '1234567'}, function(d){
-        console.log(d);
-    });
-}
-
-function getID() {        
-    chrome.storage.sync.get("id", function(storage) {        
-        if(storage.id === undefined) { 
-            setIDtoDB();
-        } else {            
-            alert('已存在' + storage.id);
+function login() {
+    chrome.storage.sync.get("password", function (storage) {
+        if (storage.password == $('#inputPassword').val()) {
+            $("#loginMode").css("display", "none");
+            $("#startMode").css("display", "block");
+        } else {
+            alert('Wrong Password!');
         }
     });
 }
 
-function setID(id) {   
-    chrome.storage.sync.set({"id":id}, function() {        
-        alert('新增: ' + id);        
+function getStorage() {
+    chrome.storage.sync.get("id", function (storage) {
+        if ($('#password').val() == '1234') {
+            $("#loginMode").css("display", "none");
+            $("#startMode").css("display", "block");
+        } else {
+            alert('wrong password');
+        }
     });
 }
 
-function setIDtoDB(id, password, email) {    
+function test() {
+    chrome.extension.sendMessage({ 'id': '1234567' }, function (d) {
+        console.log(d);
+    });
+}
+
+function getID() {
+    chrome.storage.sync.get("id", function (storage) {
+        if (storage.id === undefined) {
+            setIDtoDB();
+        } else {
+            //alert('userID 已存在: ' + storage.id);
+            return storage.id;
+        }
+    });
+}
+
+function setID(id) {
+    chrome.storage.sync.set({ "id": id }, function () {
+        alert('userID 新增: ' + id);
+    });
+}
+
+function setIDtoDB(id, password, email) {
 
     var postData = JSON.stringify({
         "id": id,
@@ -64,61 +74,116 @@ function setIDtoDB(id, password, email) {
     });
 }
 
-// d6bn5njjrxuj9hxf3a31e
-$('#btnSubmit').click(function() {    
-    getStorage();
-});
-
-$('#btnSet').click(function() {
-    //setStorage();
-    setIDtoDB();
-});
-
-$('#btnClear').click(function() {    
-    chrome.storage.sync.clear(function() {        
+function getPW() {
+    chrome.storage.sync.get("password", function (storage) {
+        if (storage.password === undefined) {
+            //setIDtoDB();
+            alert('還沒設定密碼');
+            $("#loginMode").css("display", "none");
+            $("#startMode").css("display", "block");
+        } else {
+            //alert('密碼是: ' + storage.password);
+            $("#loginMode").css("display", "block");
+            $("#startMode").css("display", "none");
+            $("#inputPassword").focus();
+            if (bgpage.block.blockIt) {
+                $("#timeDecrease").css("display", "none");
+                $("#timeIncrease").css("display", "none");
+                $('#btnStart').html("放棄");
+            }
+        }
     });
+}
+
+$('#btnSubmit').click(function () {
+    login();
 });
 
+$('#inputPassword').keydown((e) => {
+    if (e.code == "Enter") {
+        login();
+    }
+});
 
-// 首次安裝先產生 id
+// $('#btnSet').click(function() {    
+//     setIDtoDB();
+// });
+
+// $('#btnClear').click(function() {    
+//     chrome.storage.sync.clear(function() {        
+//     });
+// });
+
+// 首次安裝先產生 userID
 getID();
+
+// 檢查是否設定密碼
+getPW();
 
 //以下屬Lin
 var bgpage = chrome.extension.getBackgroundPage();
-var btnTimeDecrease = document.getElementById("time_--");
-var btnTimeIncrease = document.getElementById("time_++");
-var btnStart = document.getElementById("btn_start");
-document.getElementById('forDelayInMinutes').innerHTML = bgpage.alarm.alarmInfo.delayInMinutes;
-btnTimeDecrease.addEventListener("click", () => {
-  document.getElementById('forDelayInMinutes').innerHTML = (parseInt(document.getElementById('forDelayInMinutes').innerHTML) - 5) <= 10 ? 10 : (parseInt(document.getElementById('forDelayInMinutes').innerHTML) - 5);
-  chrome.runtime.sendMessage(document.getElementById('forDelayInMinutes').innerHTML, (response) => {
-    document.getElementById('mes').innerHTML = response;
 
-  });
-}, false);
-btnTimeIncrease.addEventListener("click", () => {
-  document.getElementById('forDelayInMinutes').innerHTML = (parseInt(document.getElementById('forDelayInMinutes').innerHTML) + 5) >= 120 ? 120 : (parseInt(document.getElementById('forDelayInMinutes').innerHTML) + 5);
-  chrome.runtime.sendMessage(document.getElementById('forDelayInMinutes').innerHTML, (response) => {
-    document.getElementById('mes').innerHTML = response;
+function delayInMinutesDecrease() {
+    $('#forDelayInMinutes').html((parseInt($('#forDelayInMinutes').html()) - 5) <= 10 ? 10 : (parseInt($('#forDelayInMinutes').html()) - 5));
+    chrome.runtime.sendMessage($('#forDelayInMinutes').html(), (response) => {
+        //$('#mes').html(response);
+    });
+}
 
-  });
-}, false);
-btnStart.addEventListener("click", () => {
-  chrome.runtime.sendMessage('Hello', (response) => {
-    document.getElementById('mes').innerHTML = response;
+function delayInMinutesIncrease() {
+    $('#forDelayInMinutes').html((parseInt($('#forDelayInMinutes').html()) + 5) >= 120 ? 120 : (parseInt($('#forDelayInMinutes').html()) + 5));
+    chrome.runtime.sendMessage($('#forDelayInMinutes').html(), (response) => {
+        //$('#mes').html(response);
+    });
+}
 
-  });
-}, false);
+function startBloking() {
+    if (!bgpage.block.blockIt) {
+        chrome.runtime.sendMessage('Hello', (response) => {
+            //$('#mes').html(response);
+        });
+        $("#timeDecrease").css("display", "none");
+        $("#timeIncrease").css("display", "none");
+        $('#btnStart').html("放棄");
+    }
+}
 
+function stopBloking() {
+    if (bgpage.block.blockIt) {
+        chrome.runtime.sendMessage('Bye', (response) => {
+            $('#mes').html(response);
+        });
+        $("#timeDecrease").css("display", "inline");
+        $("#timeIncrease").css("display", "inline");
+        $('#btnStart').html("開始");
+    }
+}
+
+$('#forDelayInMinutes').html(bgpage.alarm.alarmInfo.delayInMinutes);
+
+$('#timeDecrease').click(() => {
+    delayInMinutesDecrease();
+});
+
+$('#timeIncrease').click(() => {
+    delayInMinutesIncrease();
+});
+
+$('#btnStart').click(() => {
+    startBloking();
+    stopBloking();
+});
+
+//永動 
 setInterval(() => {
-  if (bgpage.block.blockIt) {
-    var h = Math.floor(bgpage.alarm.timeRemaining / 3600);
-    var m = Math.floor((bgpage.alarm.timeRemaining % 3600) / 60);
-    var s = Math.floor(bgpage.alarm.timeRemaining % 60);
-    h = h >= 1 ? h : ('0');
-    m = m >= 1 ? m : ('0');
-    m = m >= 10 ? m : ('0' + m);
-    s = s >= 10 ? s : ('0' + s);
-    document.getElementById('mes').innerHTML = h + ":" + m + ":" + s;
-  }
+    if (bgpage.block.blockIt) {
+        var h = Math.floor(bgpage.alarm.timeRemaining / 3600);
+        var m = Math.floor((bgpage.alarm.timeRemaining % 3600) / 60);
+        var s = Math.floor(bgpage.alarm.timeRemaining % 60);
+        h = h >= 1 ? h : ('0');
+        m = m >= 1 ? m : ('0');
+        m = m >= 10 ? m : ('0' + m);
+        s = s >= 10 ? s : ('0' + s);
+        $('#mes').html(h + ":" + m + ":" + s);
+    }
 }, 100);

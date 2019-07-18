@@ -19,6 +19,8 @@ class Block {
 		this.blackUrl = blackList;
 		this.urlRedirect = redirect;
 		this.whiteUrl = whiteList;
+
+		//this.highlight = false;
 	}
 
 	blackList() {
@@ -30,8 +32,6 @@ class Block {
 	}
 
 	whiteList() {
-
-
 		chrome.tabs.onHighlighted.addListener((tabIds) => {
 			if (this.blockIt == true) {
 				chrome.tabs.query({
@@ -44,6 +44,7 @@ class Block {
 						return tab.url.indexOf(url) != -1;
 					});
 					if (!isWhite) {
+						//this.highlight = true;
 						chrome.tabs.update({ url: this.urlRedirect });
 					}
 				});
@@ -54,10 +55,10 @@ class Block {
 			if (this.blockIt == true) {
 				chrome.tabs.query({
 					currentWindow: true,
-					highlighted:true
+					highlighted: true
 				}, (tabs) => {
 					var tab = tabs[0];
-					if (changeInfo.url == tab.url ) {
+					if (changeInfo.url == tab.url) {
 						var isWhite = this.whiteUrl.some((url) => {
 							return changeInfo.url.indexOf(url) != -1;
 						});

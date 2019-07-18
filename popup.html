@@ -1,44 +1,38 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-	<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="css/popup.css" />
-	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/2.3.0/css/flat-ui.css"> -->
-	<link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="css/popup.css" />
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
 </head>
-
 <body>
 
-	<div id="loginMode" class="wrapper" style="display: none;">
-		<div class="form-signin">
-			<h2 class="form-signin-heading">Please login</h2><br>
-			<!--<input type="text" class="form-control" name="username" placeholder="Email Address" required="" autofocus="" />-->
-			<input id="password" type="password" class="form-control" name="password" placeholder="Password"
-				required="" /><br>
-			<!--<label class="checkbox">
+<div id="loginMode" class="wrapper" style="display: none;">
+<div class="form-signin">
+    <h2 class="form-signin-heading">Please login</h2><br>
+    <!--<input type="text" class="form-control" name="username" placeholder="Email Address" required="" autofocus="" />-->
+    <input id="inputPassword" type="password" class="form-control" name="password" placeholder="Password" required=""/><br>
+    <!--<label class="checkbox">
     <input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Remember me
     </label>-->
-			<button id="btnSubmit" class="btn btn-primary btn-block" type="submit">Login</button>
-			<button id="btnSet" class="btn btn-success btn-block" type="">Set</button>
-			<button id="btnClear" class="btn btn-danger btn-block" type="">Clear</button>
-		</div>
-	</div>
+    <button id="btnSubmit" class="btn btn-primary btn-block" type="submit">Login</button>   
+    <!--<button id="btnSet" class="btn btn-success btn-block" type="">Set</button>-->
+    <!--<button id="btnClear" class="btn btn-danger btn-block" type="">Clear</button>-->
+</div>
+</div>
 
-	<div id="startMode" style="display: block;">
-		<div id="mes">Background Mes</div>
-		<div class="tile">
-			<button id="time_--" class="btn btn-primary btn-large">＜</button>
-			<span id="forDelayInMinutes">25</span>
-			<button id="time_++" class="btn btn-primary btn-large">＞</button>
-			<br>
-			<button id="btn_start" class="btn btn-primary btn-large"><span class="fui-home"></span>開始</button>
-		</div>
-	</div>
-
-	<script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
-	<script type="text/javascript" src="js/ContextMenus.js"></script>
-	<script type="text/javascript" src="js/popup.js"></script>
+<div id="startMode" style="display: block;">
+    <div id="mes">Background Mes</div>
+    <div class="tile">
+        <button id="timeDecrease" class="btn btn-primary btn-large" style="display: inline;">＜</button>
+        <span id="forDelayInMinutes">25</span>
+        <button id="timeIncrease" class="btn btn-primary btn-large" style="display: inline;">＞</button>
+        <br>
+        <button id="btnStart" class="btn btn-primary btn-large"><span class="fui-home"></span>開始</button>
+    </div>
+</div>
+<script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="js/ContextMenus.js"></script>
+<script type="text/javascript" src="js/popup.js"></script>
 </body>
-
 </html>

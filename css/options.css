@@ -3,10 +3,10 @@
     --input-padding-y: .75rem;
   }
   
-  /* body {
-    background: #007bff;
-    background: linear-gradient(to right, #0062E6, #33AEFF);
-  }             by lin*/ 
+  body {
+    background: #fff;
+    background: linear-gradient(to right, rgb(255, 225, 225), #fff);
+  }
   
   .card-signin {
     border: 0;
@@ -157,7 +157,7 @@
   }
    
   .menu .title .min_picture {
-    background-image: url('/icon.png');
+    background-image: url('../picture/icon.png');
     background-size: 50px auto;
     height: 50px;
     width: 50px;
