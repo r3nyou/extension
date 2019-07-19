@@ -12,12 +12,14 @@ class Alarm {
     alarm() {
         this.timeStart = 0;
         this.timeNow = 0;
+        var timerId = 0;
         chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if (parseInt(message) <= 120 && parseInt(message) >= 10) {
                 sendResponse('Hello.');
                 this.alarmInfo.delayInMinutes = parseInt(message);
             }
         });
+
         chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if (message == 'Hello') {
                 sendResponse('Hello from background.');
@@ -28,10 +30,20 @@ class Alarm {
                 chrome.alarms.onAlarm.addListener(() => {
                     block.blockIt = false;
                 });
-                setInterval(() => {
+                timerId = setInterval(() => {
                     this.timeNow = Date.now() / 1000;
                     this.timeRemaining = this.alarmInfo.delayInMinutes * 60 - (this.timeNow - this.timeStart);
                 }, 100);
+            }
+        });
+
+        chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+            if (message == 'Bye') {
+                sendResponse('Bye from background.');
+                block.blockIt = false;
+                clearInterval(timerId);
+                
+                chrome.alarms.clearAll();
             }
         });
     }

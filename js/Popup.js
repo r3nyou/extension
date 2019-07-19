@@ -18,23 +18,6 @@ function login() {
     });
 }
 
-function getStorage() {    
-    chrome.storage.sync.get("id", function(storage) {        
-        if($('#password').val() == '1234') { 
-            $("#loginMode").css("display", "none");
-            $("#startMode").css("display", "block");
-        } else {            
-            alert('wrong password');
-        }
-    });
-}
-
-function test() {
-    chrome.extension.sendMessage({'id': '1234567'}, function(d){
-        console.log(d);
-    });
-}
-
 function getID() {        
     chrome.storage.sync.get("id", function(storage) {        
         if(storage.id === undefined) { 
@@ -74,23 +57,55 @@ function setIDtoDB(id, password, email) {
     });
 }
 
+// function getPW() {
+//     chrome.storage.sync.get("password", function(storage) {        
+//         if(storage.password === undefined) { 
+//             //setIDtoDB();
+//             alert('還沒設定密碼');
+//             $("#loginMode").css("display", "none");
+//             $("#startMode").css("display", "block");
+//         } else {
+//             alert('密碼是: ' + storage.password);
+//             $("#loginMode").css("display", "block");
+//             $("#startMode").css("display", "none");
+//         }
+//     });
+// }
+
 function getPW() {
-    chrome.storage.sync.get("password", function(storage) {        
-        if(storage.password === undefined) { 
+    chrome.storage.sync.get("password", function (storage) {
+        if (storage.password === undefined) {
             //setIDtoDB();
             alert('還沒設定密碼');
             $("#loginMode").css("display", "none");
             $("#startMode").css("display", "block");
+            if (bgpage.block.blockIt) {
+                $("#timeDecrease").css("display", "none");
+                $("#timeIncrease").css("display", "none");
+                $('#btnStart').html("放棄");
+            }
         } else {
-            alert('密碼是: ' + storage.password);
+            //alert('密碼是: ' + storage.password);
             $("#loginMode").css("display", "block");
             $("#startMode").css("display", "none");
+            $("#inputPassword").focus();
+            if (bgpage.block.blockIt) {
+                $("#timeDecrease").css("display", "none");
+                $("#timeIncrease").css("display", "none");
+                $('#btnStart').html("放棄");
+            }
         }
     });
 }
 
 $('#btnSubmit').click(function() {    
     login();
+});
+
+$('#inputPassword').keydown((e) => {
+    if (e.code == "Enter") {
+        login();
+    }
 });
 
 // $('#btnSet').click(function() {    
@@ -110,40 +125,68 @@ getPW();
 
 //以下屬Lin
 var bgpage = chrome.extension.getBackgroundPage();
-var btnTimeDecrease = document.getElementById("time_--");
-var btnTimeIncrease = document.getElementById("time_++");
-var btnStart = document.getElementById("btn_start");
-document.getElementById('forDelayInMinutes').innerHTML = bgpage.alarm.alarmInfo.delayInMinutes;
-btnTimeDecrease.addEventListener("click", () => {
-  document.getElementById('forDelayInMinutes').innerHTML = (parseInt(document.getElementById('forDelayInMinutes').innerHTML) - 5) <= 10 ? 10 : (parseInt(document.getElementById('forDelayInMinutes').innerHTML) - 5);
-  chrome.runtime.sendMessage(document.getElementById('forDelayInMinutes').innerHTML, (response) => {
-    document.getElementById('mes').innerHTML = response;
 
-  });
-}, false);
-btnTimeIncrease.addEventListener("click", () => {
-  document.getElementById('forDelayInMinutes').innerHTML = (parseInt(document.getElementById('forDelayInMinutes').innerHTML) + 5) >= 120 ? 120 : (parseInt(document.getElementById('forDelayInMinutes').innerHTML) + 5);
-  chrome.runtime.sendMessage(document.getElementById('forDelayInMinutes').innerHTML, (response) => {
-    document.getElementById('mes').innerHTML = response;
+function delayInMinutesDecrease() {
+    $('#forDelayInMinutes').html((parseInt($('#forDelayInMinutes').html()) - 5) <= 10 ? 10 : (parseInt($('#forDelayInMinutes').html()) - 5));
+    chrome.runtime.sendMessage($('#forDelayInMinutes').html(), (response) => {
+        //$('#mes').html(response);
+    });
+}
 
-  });
-}, false);
-btnStart.addEventListener("click", () => {
-  chrome.runtime.sendMessage('Hello', (response) => {
-    document.getElementById('mes').innerHTML = response;
+function delayInMinutesIncrease() {
+    $('#forDelayInMinutes').html((parseInt($('#forDelayInMinutes').html()) + 5) >= 120 ? 120 : (parseInt($('#forDelayInMinutes').html()) + 5));
+    chrome.runtime.sendMessage($('#forDelayInMinutes').html(), (response) => {
+        //$('#mes').html(response);
+    });
+}
 
-  });
-}, false);
+function startBloking() {
+    if (!bgpage.block.blockIt) {
+        chrome.runtime.sendMessage('Hello', (response) => {
+            //$('#mes').html(response);
+        });
+        $("#timeDecrease").css("display", "none");
+        $("#timeIncrease").css("display", "none");
+        $('#btnStart').html("放棄");
+    }
+}
 
+function stopBloking() {
+    if (bgpage.block.blockIt) {
+        chrome.runtime.sendMessage('Bye', (response) => {
+            $('#mes').html(response);
+        });
+        $("#timeDecrease").css("display", "inline");
+        $("#timeIncrease").css("display", "inline");
+        $('#btnStart').html("開始");
+    }
+}
+
+$('#forDelayInMinutes').html(bgpage.alarm.alarmInfo.delayInMinutes);
+
+$('#timeDecrease').click(() => {
+    delayInMinutesDecrease();
+});
+
+$('#timeIncrease').click(() => {
+    delayInMinutesIncrease();
+});
+
+$('#btnStart').click(() => {
+    startBloking();
+    stopBloking();
+});
+
+//永動 
 setInterval(() => {
-  if (bgpage.block.blockIt) {
-    var h = Math.floor(bgpage.alarm.timeRemaining / 3600);
-    var m = Math.floor((bgpage.alarm.timeRemaining % 3600) / 60);
-    var s = Math.floor(bgpage.alarm.timeRemaining % 60);
-    h = h >= 1 ? h : ('0');
-    m = m >= 1 ? m : ('0');
-    m = m >= 10 ? m : ('0' + m);
-    s = s >= 10 ? s : ('0' + s);
-    document.getElementById('mes').innerHTML = h + ":" + m + ":" + s;
-  }
+    if (bgpage.block.blockIt) {
+        var h = Math.floor(bgpage.alarm.timeRemaining / 3600);
+        var m = Math.floor((bgpage.alarm.timeRemaining % 3600) / 60);
+        var s = Math.floor(bgpage.alarm.timeRemaining % 60);
+        h = h >= 1 ? h : ('0');
+        m = m >= 1 ? m : ('0');
+        m = m >= 10 ? m : ('0' + m);
+        s = s >= 10 ? s : ('0' + s);
+        $('#mes').html(h + ":" + m + ":" + s);
+    }
 }, 100);
