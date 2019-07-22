@@ -1,3 +1,5 @@
+/* 初始化 ID */
+
 var storage = chrome.storage.sync;
 
 // function setStorage() {
@@ -22,21 +24,14 @@ function getID() {
     chrome.storage.sync.get("id", function(storage) {        
         if(storage.id === undefined) { 
             setIDtoDB();
-        } else {            
-            alert('userID 已存在: ' + storage.id);
+        } else {
+            alert('userID 已存在: ' + storage.id);            
             return storage.id;
         }
     });
 }
 
-function setID(id) {   
-    chrome.storage.sync.set({"id":id}, function() {        
-        alert('userID 新增: ' + id);        
-    });
-}
-
-function setIDtoDB(id, password, email) {    
-
+function setIDtoDB(id, password, email) {
     var postData = JSON.stringify({
         "id": id,
         "password": "",
@@ -54,6 +49,16 @@ function setIDtoDB(id, password, email) {
         success: function (msg) {
             setID(msg.id);
         }
+    });
+}
+
+function setID(id) {   
+    chrome.storage.sync.set({"id":id}, function() {        
+        alert('userID 新增: ' + id);
+
+        chrome.runtime.sendMessage({msg: 'createUrl', userid: id}, (response) => {
+            //$('#mes').html(response);
+        });
     });
 }
 
