@@ -2,13 +2,6 @@
 
 var storage = chrome.storage.sync;
 
-// function setStorage() {
-// 	var value = $('#password').val();
-// 	storage.set({'userID': value}, function() {
-
-// 	});
-// }
-
 function login() {
     chrome.storage.sync.get("password", function(storage) {        
         if(storage.password == $('#inputPassword').val()) { 
@@ -25,7 +18,7 @@ function getID() {
         if(storage.id === undefined) { 
             setIDtoDB();
         } else {
-            alert('userID 已存在: ' + storage.id);            
+            //alert('userID 已存在: ' + storage.id);            
             return storage.id;
         }
     });
@@ -56,32 +49,16 @@ function setID(id) {
     chrome.storage.sync.set({"id":id}, function() {        
         alert('userID 新增: ' + id);
 
-        chrome.runtime.sendMessage({msg: 'createUrl', userid: id}, (response) => {
+        chrome.runtime.sendMessage({msg: 'createUrl'}, (response) => {
             //$('#mes').html(response);
         });
     });
 }
 
-// function getPW() {
-//     chrome.storage.sync.get("password", function(storage) {        
-//         if(storage.password === undefined) { 
-//             //setIDtoDB();
-//             alert('還沒設定密碼');
-//             $("#loginMode").css("display", "none");
-//             $("#startMode").css("display", "block");
-//         } else {
-//             alert('密碼是: ' + storage.password);
-//             $("#loginMode").css("display", "block");
-//             $("#startMode").css("display", "none");
-//         }
-//     });
-// }
-
 function getPW() {
     chrome.storage.sync.get("password", function (storage) {
-        if (storage.password === undefined) {
-            //setIDtoDB();
-            alert('還沒設定密碼');
+        if (storage.password === undefined) {            
+            // alert('還沒設定密碼');
             $("#loginMode").css("display", "none");
             $("#startMode").css("display", "block");
             if (bgpage.block.blockIt) {
@@ -90,7 +67,7 @@ function getPW() {
                 $('#btnStart').html("放棄");
             }
         } else {
-            //alert('密碼是: ' + storage.password);
+            alert('密碼是: ' + storage.password);
             $("#loginMode").css("display", "block");
             $("#startMode").css("display", "none");
             $("#inputPassword").focus();
@@ -112,15 +89,6 @@ $('#inputPassword').keydown((e) => {
         login();
     }
 });
-
-// $('#btnSet').click(function() {    
-//     setIDtoDB();
-// });
-
-// $('#btnClear').click(function() {    
-//     chrome.storage.sync.clear(function() {        
-//     });
-// });
 
 // 首次安裝先產生 userID
 getID();

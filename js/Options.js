@@ -2,6 +2,8 @@
 
 var storage = chrome.storage.sync;
 
+var userID;
+
 function setPWtoDB(password) {
 
     chrome.storage.sync.get("id", function(storage) {
@@ -35,19 +37,6 @@ function setPW(password) {
         alert('password 新增: ' + password);
     });
 }
-
-// function getStorage() {
-// 	storage.get('userID', function(items) {
-// 		if (items.userID) {
-//             if (items.userID == $('#inputPassword').val()) {                
-//                 $("#loginMode").css("display", "none");
-//                 $("#optionMode").css("display", "block");
-//             } else {           
-//                 alert("wrong Password!");
-//             }            
-// 		}
-// 	});
-// }
 
 function getPW() {
     chrome.storage.sync.get("password", function(storage) {
@@ -99,7 +88,7 @@ function setWhiteUrl() {
     var add = $('#whiteInput').val();
     bgpage.block.whiteUrl.push(add);
 
-    console.log(bgpage.block.whiteUrl);
+    //console.log(bgpage.block.whiteUrl);
 
     var data = JSON.stringify(bgpage.block.whiteUrl);
     chrome.storage.sync.set({"whiteUrl":data}, function() {
@@ -111,36 +100,50 @@ function setWhiteUrl() {
     $('#whiteInput').val('');
 }
 
+function getUserID() {
+    return new Promise(function(resolve, reject) {
+        chrome.storage.sync.get("id", function(storage) {
+            userID = storage.id;
+            resolve(userID);
+        });
+    });
+}
+
 function updateUrltoDB(type, newUrl) {
-    var bgpage = chrome.extension.getBackgroundPage();
+    
     var postData;
 
-    console.log(newUrl);
-    
-    if(type == 'blackUrl') {
-        postData = JSON.stringify({
-            "id": bgpage.userID,
-            "blackUrl": newUrl
+    if(userID === undefined) {
+        chrome.storage.sync.get("id", function(storage) {
+            userID = storage.id;
+            updateUrltoDB(type, newUrl);
         });
-    } else if (type == 'whiteUrl') {
-        postData = JSON.stringify({
-            "id": bgpage.userID,
-            "whiteUrl": newUrl
+    } else {
+        if(type == 'blackUrl') {
+            postData = JSON.stringify({
+                "id": userID,
+                "blackUrl": newUrl
+            });
+        } else if (type == 'whiteUrl') {
+            postData = JSON.stringify({
+                "id": userID,
+                "whiteUrl": newUrl
+            });
+        }
+        
+        var postUrl = 'http://localhost/extension_backend/api/list/update.php';
+    
+        $.ajax({
+            type: 'PUT',
+            dataType: 'json',
+            url: postUrl,
+            contentType: 'application/json; charset=UTF-8',
+            data: postData,
+            success: function (msg) {
+                
+            }
         });
     }
-    
-    var postUrl = 'http://localhost/extension_backend/api/list/update.php';
-
-    $.ajax({
-        type: 'PUT',
-        dataType: 'json',
-        url: postUrl,
-        contentType: 'application/json; charset=UTF-8',
-        data: postData,
-        success: function (msg) {
-            
-        }
-    });
 }
 
 $('#btnSet').click(function() {    
@@ -170,20 +173,11 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 	for (key in changes) {
         var storageChange = changes[key];
 
-        // console.log('存储键“%s”（位于“%s”命名空间中）已更改。' +
-        //     '原来的值为“%s”，新的值为“%s”。',
-        // key,
-        // namespace,
-        // storageChange.oldValue,
-        // storageChange.newValue);
-        
-        // switch(storageChange.key) {
-        //     case 'blackUrl':
-        //             setBlackUrl(storageChange.newValue);
-        //             break;
-        //     case 'whiteUrl':
-        //             setWhiteUrl(storageChange.newValue);
-        //             break;
-        // }
+        console.log('存储键“%s”（位于“%s”命名空间中）已更改。' +
+            '原来的值为“%s”，新的值为“%s”。',
+        key,
+        namespace,
+        storageChange.oldValue,
+        storageChange.newValue);
 	}
 });
