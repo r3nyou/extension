@@ -2,18 +2,18 @@ var storage = chrome.storage.sync;
 
 function setPWtoDB(password) {
 
-    chrome.storage.sync.get("id", function(storage) {        
-        if(storage.id === undefined) { 
+    chrome.storage.sync.get("id", function (storage) {
+        if (storage.id === undefined) {
             alert('userID 不存在');
-        } else {            
+        } else {
             var postData = JSON.stringify({
                 "id": storage.id,
                 "password": password,
                 "email": ""
             });
-        
+
             var postUrl = 'http://localhost/extension_backend/api/user/update.php';
-        
+
             $.ajax({
                 type: 'PUT',
                 dataType: 'json',
@@ -28,28 +28,28 @@ function setPWtoDB(password) {
     });
 }
 
-function setPW(password) {   
-    chrome.storage.sync.set({"password":password}, function() {        
-        alert('password 新增: ' + password);        
+function setPW(password) {
+    chrome.storage.sync.set({ "password": password }, function () {
+        alert('password 新增: ' + password);
     });
 }
 
 function getStorage() {
-	storage.get('userID', function(items) {
-		if (items.userID) {
-            if (items.userID == $('#inputPassword').val()) {                
+    storage.get('userID', function (items) {
+        if (items.userID) {
+            if (items.userID == $('#inputPassword').val()) {
                 $("#loginMode").css("display", "none");
                 $("#optionMode").css("display", "block");
-            } else {           
+            } else {
                 alert("wrong Password!");
-            }            
-		}
-	});
+            }
+        }
+    });
 }
 
 function getPW() {
-    chrome.storage.sync.get("password", function(storage) {        
-        if(storage.password === undefined) {            
+    chrome.storage.sync.get("password", function (storage) {
+        if (storage.password === undefined) {
             alert('還沒設定密碼');
             $("#loginMode").css("display", "none");
             $("#optionMode").css("display", "block");
@@ -57,13 +57,14 @@ function getPW() {
             alert('密碼是: ' + storage.password);
             $("#loginMode").css("display", "block");
             $("#optionMode").css("display", "none");
+            $("#inputPassword").focus();
         }
     });
 }
 
 function login() {
-    chrome.storage.sync.get("password", function(storage) {        
-        if(storage.password == $('#inputPassword').val()) { 
+    chrome.storage.sync.get("password", function (storage) {
+        if (storage.password == $('#inputPassword').val()) {
             $("#loginMode").css("display", "none");
             $("#optionMode").css("display", "block");
         } else {
@@ -72,18 +73,40 @@ function login() {
     });
 }
 
-$('#btnSet').click(function() {    
-    setPWtoDB( $('#password').val() );
+$('#inputPassword').keydown((e) => {
+    if (e.code == "Enter") {
+        login();
+    }
 });
 
-$('#btnClear').click(function() {    
-    chrome.storage.sync.remove("password" , function() {        
+$('#btnSet').click(function () {
+    setPWtoDB($('#password').val());
+});
+
+$('#btnClear').click(function () {
+    chrome.storage.sync.remove("password", function () {
     });
 });
 
-$('#btnLogin').click(function() {    
+$('#btnLogin').click(function () {
     login();
 });
 
 // 檢查是否設定密碼
 getPW();
+
+//lin area
+var bgpage = chrome.extension.getBackgroundPage();
+$('#BWSwitch').click(function () {
+    if (bgpage.block.blackMode) {
+        chrome.runtime.sendMessage('change2White', (response) => {
+            //$('#mes').html(response);
+            alert(response);
+        });
+    } else {
+        chrome.runtime.sendMessage('change2Black', (response) => {
+            //$('#mes').html(response);
+            alert(response);
+        });
+    }
+});
