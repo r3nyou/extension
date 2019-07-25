@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>磚注</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="css/bootstrap.min.css"> 
-  <link href="css/toggle.min.css" rel="stylesheet"> 
-  <link rel="stylesheet" type="text/css" href="css/options.css" />  
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link href="css/toggle.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="css/options.css" />
   <link rel="icon" href="picture/icon.png" type="image/png" sizes="16x16">
 </head>
+
 <body>
 
   <div id="loginMode" style="display: none">
@@ -24,18 +26,19 @@
                   <label for="inputEmail">Email address</label>
                 </div>-->
                 <div>
-                    <img id="icon" src="picture/icon.png">
+                  <img id="icon" src="picture/icon.png">
                 </div>
                 <div class="form-label-group">
                   <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
                   <label for="inputPassword">Password</label>
                 </div>
-  
+
                 <!--<div class="custom-control custom-checkbox mb-3">
                   <input type="checkbox" class="custom-control-input" id="customCheck1">
                   <label class="custom-control-label" for="customCheck1">Remember password</label>
                 </div>-->
-                <input id="btnLogin" class="btn btn-lg btn-primary btn-block text-uppercase" readonly="readonly" value="Sign in">
+                <input id="btnLogin" class="btn btn-lg btn-primary btn-block text-uppercase" readonly="readonly"
+                  value="Sign in">
                 <hr class="my-4">
                 <!--<button class="btn btn-lg btn-google btn-block text-uppercase" type="submit"><i class="fab fa-google mr-2"></i> Sign in with Google</button>-->
               </form>
@@ -48,36 +51,42 @@
 
   <div class="container-fluid" id="optionMode" style="display: block">
     <div class="row content">
-      <div class="col-sm-3 sidenav">       
-        <h4>磚注</h4>        
+      <div class="col-sm-3 sidenav">
+        <h4>磚注</h4>
         <ul class="nav nav-tabs nav-pills nav-stacked" role="tablist">
           <li role="presentation"><a href="#black" aria-controls="black" role="tab" data-toggle="tab">設定黑名單</a></li>
           <li role="presentation"><a href="#white" aria-controls="white" role="tab" data-toggle="tab">設定白名單</a></li>
-          <li role="presentation"><a href="#passwordInfo" aria-controls="passwordInfo" role="tab" data-toggle="tab">密碼(保護)設定</a></li>
+          <li role="presentation"><a href="#passwordInfo" aria-controls="passwordInfo" role="tab"
+              data-toggle="tab">密碼(保護)設定</a></li>
           <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">城鎮</a></li>
           <li role="presentation"><a href="#info" aria-controls="info" role="tab" data-toggle="tab">說明頁面</a></li>
         </ul>
-        <div>
-          阻擋模式: <input type="checkbox" data-toggle="switchbutton" checked data-onlabel="黑名單" data-offlabel="白名單" data-onstyle="dark" data-offstyle="default">        
+        <div id="BWSwitch">
+          阻擋模式: <input type="checkbox" data-toggle="switchbutton" checked data-onlabel="黑名單" data-offlabel="白名單"
+            data-onstyle="dark" data-offstyle="default">
+        </div>
+        <div id="BWSwitch4White">
+          阻擋模式: <input type="checkbox" data-toggle="switchbutton" data-onlabel="黑名單" data-offlabel="白名單"
+            data-onstyle="dark" data-offstyle="default">
         </div>
       </div>
 
       <div class="tab-content col-sm-9 optionsContent">
-        
+
         <!--設定黑名單-->
         <div role="tabpanel" class="tab-pane active" id="black">
-            <input id="blackInput" name="blackInput" placeholder="輸入網址(例如: facebook)"/> 
-            <button id="blackSet" class="btn btn-success" type="">Set</button>
+          <input id="blackInput" name="blackInput" placeholder="輸入網址(例如: facebook)" />
+          <button id="blackSet" class="btn btn-success" type="">Set</button>
         </div>
-        
+
         <!--設定白名單-->
         <div role="tabpanel" class="tab-pane" id="white">
-          <input id="whiteInput" name="whiteInput" placeholder="輸入網址(例如: facebook)"/> 
+          <input id="whiteInput" name="whiteInput" placeholder="輸入網址(例如: facebook)" />
           <button id="whiteSet" class="btn btn-success" type="">Set</button>
         </div>
 
         <div role="tabpanel" class="tab-pane" id="passwordInfo">
-          <input id="password" type="password" class="" name="password" placeholder="Password"/> 
+          <input id="password" type="password" class="" name="password" placeholder="Password" />
           <button id="btnSet" class="btn btn-success" type="">Set</button>
           <button id="btnClear" class="btn btn-success" type="">Clear</button>
         </div>
@@ -85,7 +94,7 @@
         <div role="tabpanel" class="tab-pane" id="info">5</div>
       </div>
     </div>
-  </div> 
+  </div>
 
   <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
@@ -93,4 +102,5 @@
   <script type="text/javascript" src="js/Options.js"></script>
 
 </body>
+
 </html>

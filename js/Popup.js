@@ -3,8 +3,8 @@
 var storage = chrome.storage.sync;
 
 function login() {
-    chrome.storage.sync.get("password", function(storage) {        
-        if(storage.password == $('#inputPassword').val()) { 
+    chrome.storage.sync.get("password", function (storage) {
+        if (storage.password == $('#inputPassword').val()) {
             $("#loginMode").css("display", "none");
             $("#startMode").css("display", "block");
         } else {
@@ -13,9 +13,9 @@ function login() {
     });
 }
 
-function getID() {        
-    chrome.storage.sync.get("id", function(storage) {        
-        if(storage.id === undefined) { 
+function getID() {
+    chrome.storage.sync.get("id", function (storage) {
+        if (storage.id === undefined) {
             setIDtoDB();
         } else {
             //alert('userID 已存在: ' + storage.id);            
@@ -45,11 +45,11 @@ function setIDtoDB(id, password, email) {
     });
 }
 
-function setID(id) {   
-    chrome.storage.sync.set({"id":id}, function() {        
+function setID(id) {
+    chrome.storage.sync.set({ "id": id }, function () {
         alert('userID 新增: ' + id);
 
-        chrome.runtime.sendMessage({msg: 'createUrl'}, (response) => {
+        chrome.runtime.sendMessage({ msg: 'createUrl' }, (response) => {
             //$('#mes').html(response);
         });
     });
@@ -57,30 +57,25 @@ function setID(id) {
 
 function getPW() {
     chrome.storage.sync.get("password", function (storage) {
-        if (storage.password === undefined) {            
+        if (bgpage.block.blockIt) {
+            $("#timeDecrease").css("display", "none");
+            $("#timeIncrease").css("display", "none");
+            $('#btnStart').html("放棄");
+        }
+        if (storage.password === undefined) {
             // alert('還沒設定密碼');
             $("#loginMode").css("display", "none");
             $("#startMode").css("display", "block");
-            if (bgpage.block.blockIt) {
-                $("#timeDecrease").css("display", "none");
-                $("#timeIncrease").css("display", "none");
-                $('#btnStart').html("放棄");
-            }
         } else {
-            alert('密碼是: ' + storage.password);
+            //alert('密碼是: ' + storage.password);
             $("#loginMode").css("display", "block");
             $("#startMode").css("display", "none");
             $("#inputPassword").focus();
-            if (bgpage.block.blockIt) {
-                $("#timeDecrease").css("display", "none");
-                $("#timeIncrease").css("display", "none");
-                $('#btnStart').html("放棄");
-            }
         }
     });
 }
 
-$('#btnSubmit').click(function() {    
+$('#btnSubmit').click(function () {
     login();
 });
 
