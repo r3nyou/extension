@@ -50,7 +50,7 @@ Block.prototype.createUrltoDB = function() {
 				
 			}
 		});
-		
+
 	});
 };
 
@@ -172,6 +172,7 @@ Block.prototype.whiteList = function() {
 
 Block.prototype.createUrl = function(createBlack, createWhite, createDB, getBlack, getWhite, setBlack, setWhite) {
 	chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+		console.log('createUrl');
 		if (request.msg == 'createUrl') {
 			createBlack()
 			.then(createWhite)
@@ -180,8 +181,9 @@ Block.prototype.createUrl = function(createBlack, createWhite, createDB, getBlac
 			.then(getWhite)
 			.then(setBlack)
 			.then(setWhite);
-		}
-		sendResponse('done createUrl');
+
+			sendResponse('done createUrl');
+		}		
 	});
 }
 
