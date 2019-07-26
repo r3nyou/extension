@@ -45,9 +45,9 @@ function setIDtoDB(id, password, email) {
     });
 }
 
-function setID(id) {
-    chrome.storage.sync.set({ "id": id }, function () {
-        alert('userID 新增: ' + id);
+function setID(uid) {
+    chrome.storage.sync.set({ "id": uid }, function () {
+        alert('userID 新增: ' + uid);
 
         chrome.runtime.sendMessage({ msg: 'createUrl' }, (response) => {
             //$('#mes').html(response);

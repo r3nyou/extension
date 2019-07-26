@@ -13,7 +13,9 @@
 			"js/jquery-3.4.1.min.js",
 			"js/Block.js",
 			"js/ContextMenus.js",
-      "js/Alarm.js"
+      "js/Alarm.js",
+      "js/Socket.js",
+      "js/socket.io.js"
     ]
   }, 
   "options_page": "options.html",

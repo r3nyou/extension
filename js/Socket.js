@@ -1,0 +1,47 @@
+document.writeln("<script src='js/socket.io.js'></script>");
+
+const getID = chrome.storage.sync.get("id", function (storage) {
+    if (storage.id != undefined) {
+        connection(storage.id);
+    } else {
+        console.log('go to IDListner');
+        IDListenr;
+    }
+});
+
+const IDListenr = chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {   
+    
+    if (request.msg == 'createUrl') {
+        getID;
+        sendResponse('socket connected');
+    }
+    sendResponse('socket connected');    
+});
+
+
+//const uid = Date.parse(new Date());
+
+const connection = function(uid) {
+
+    console.log('connection');
+
+    const socket = io('http://127.0.0.1:3120');
+
+    socket.on('connect', function() {
+        socket.emit('login', uid);
+    });
+
+    socket.on('new msg', function(content) {
+        console.log(content);
+    });
+};
+
+const broadcast = function() {
+
+};
+
+//init;
+$( document ).ready(function() {
+    //connection('FD059C816EC2BE52EC2E402EC9A31FDD');
+    getID;
+});
