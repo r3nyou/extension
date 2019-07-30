@@ -47,10 +47,13 @@ function getPW() {
             $("#BWSwitch4White").css("display", "none");
             $("#BWSwitch").css("display", "block");
         }
+        showBlackList();
+        showWhiteList();
         if (storage.password === undefined) {
             /*alert('還沒設定密碼');*/
             $("#loginMode").css("display", "none");
             $("#optionMode").css("display", "block");
+            $("#blackInput").focus();
         } else {
             /*alert('密碼是: ' + storage.password);*/
             $("#loginMode").css("display", "block");
@@ -72,40 +75,109 @@ function login() {
 }
 
 /* 設定黑名單 & 白名單 */
+function errInput(add) {
+    if (add == "") {
+        alert('請輸入網址');
+    }
+
+    if (bgpage.block.blackUrl.indexOf(add) != -1) {
+        alert('網址已存在');
+    }
+}
 
 function setBlackUrl() {
 
-    var bgpage = chrome.extension.getBackgroundPage();
     var add = $('#blackInput').val();
 
-    bgpage.block.blackUrl.push(add);
+    errInput(add);
 
-    var data = JSON.stringify(bgpage.block.blackUrl);
-    chrome.storage.sync.set({ "blackUrl": data }, function () {
-        updateUrltoDB('blackUrl', data);
-    });
+    if (add != "" && (bgpage.block.blackUrl.indexOf(add) == -1)) {
 
-    alert('新增成功: ' + add);
+        bgpage.block.blackUrl.push(add.trim());
 
-    $('#blackInput').val('');
+        var data = JSON.stringify(bgpage.block.blackUrl);
+        chrome.storage.sync.set({ "blackUrl": data }, function () {
+            updateUrltoDB('blackUrl', data);
+        });
+
+        showBlackList();
+        //alert('新增成功: ' + add);
+        $('#blackInput').val('');
+    }
 }
 
 function setWhiteUrl() {
 
-    var bgpage = chrome.extension.getBackgroundPage();
     var add = $('#whiteInput').val();
-    bgpage.block.whiteUrl.push(add);
 
-    //console.log(bgpage.block.whiteUrl);
+    errInput(add);
 
-    var data = JSON.stringify(bgpage.block.whiteUrl);
-    chrome.storage.sync.set({ "whiteUrl": data }, function () {
-        updateUrltoDB('whiteUrl', data);
+    if (add != "" && (bgpage.block.whiteUrl.indexOf(add) == -1)) {
+
+        bgpage.block.whiteUrl.push(add.trim());
+
+        var data = JSON.stringify(bgpage.block.whiteUrl);
+        chrome.storage.sync.set({ "whiteUrl": data }, function () {
+            updateUrltoDB('whiteUrl', data);
+        });
+
+        showWhiteList();
+        //alert('新增成功: ' + add);
+        $('#whiteInput').val('');
+    }
+}
+
+function removeBlackUrl(url) {
+    bgpage.block.blackUrl.splice(bgpage.block.blackUrl.indexOf(url), 1);
+}
+
+function removeWhiteUrl(url) {
+    bgpage.block.whiteUrl.splice(bgpage.block.whiteUrl.indexOf(url), 1);
+}
+
+function showBlackList() {
+    chrome.storage.sync.get("blackUrl", function (storage) {
+        bgpage.block.blackUrl.forEach(element => {
+            if (bgpage.block.blackUrl.indexOf(element) == 0)
+                $('#blackList').html(spawnLabDeletBtn(element));
+            else
+                $('#blackList').append(spawnLabDeletBtn(element));
+            $(`#${element}`).click(function () {
+                removeBlackUrl(element);
+                var data = JSON.stringify(bgpage.block.blackUrl);
+                chrome.storage.sync.set({ "blackUrl": data }, function () {
+                    updateUrltoDB('blackUrl', data);
+                });
+                showBlackList();
+            });
+        });
     });
+}
 
-    alert('新增成功: ' + add);
+function showWhiteList() {
+    chrome.storage.sync.get("whiteUrl", function (storage) {
+        bgpage.block.whiteUrl.forEach(element => {
+            if (bgpage.block.whiteUrl.indexOf(element) == 0)
+                $('#whiteList').html(spawnLabDeletBtn(element));
+            else
+                $('#whiteList').append(spawnLabDeletBtn(element));
+            $(`#${element}`).click(function () {
+                removeWhiteUrl(element);
+                var data = JSON.stringify(bgpage.block.whiteUrl);
+                chrome.storage.sync.set({ "whiteUrl": data }, function () {
+                    updateUrltoDB('whiteUrl', data);
+                });
+                showWhiteList();
+            });
+        });
+    });
+}
 
-    $('#whiteInput').val('');
+function spawnLabDeletBtn(element) {
+    // var str = "<tr><td></td><td>" + element + "</td><td></td><td></td><td>";
+    var str = "<tr><td style='padding-left:80px;' colspan='5'>" + element + "</td><td>";
+    str += '<button data-toggle="tooltip" id="' + element + '" title="" class="pd-setting-ed"data-original-title="Trash"><i class="fa fa-trash-o"aria-hidden="true"></i></button></td></tr>';
+    return str;
 }
 
 function getUserID() {
@@ -160,6 +232,18 @@ $('#inputPassword').keydown((e) => {
     }
 });
 
+$('#blackInput').keydown((e) => {
+    if (e.code == "Enter") {
+        setBlackUrl();
+    }
+});
+
+$('#whiteInput').keydown((e) => {
+    if (e.code == "Enter") {
+        setWhiteUrl();
+    }
+});
+
 $('#btnSet').click(function () {
     setPWtoDB($('#password').val());
 });
@@ -187,8 +271,8 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
     for (key in changes) {
         var storageChange = changes[key];
 
-        console.log('儲存鍵“%s”（位于“%s”命名空间中）已更改。' +
-            '原来的值为“%s”，新的值为“%s”。',
+        console.log('儲存鍵“%s”（位於“%s”命名空間中）已更改。' +
+            '原來的值為“%s”，新的值為“%s”。',
             key,
             namespace,
             storageChange.oldValue,
@@ -209,12 +293,12 @@ function BWSwitch() {
     if (bgpage.block.blackMode) {
         chrome.runtime.sendMessage('change2White', (response) => {
             //$('#mes').html(response);
-            alert(response);
+            //alert(response);
         });
     } else {
         chrome.runtime.sendMessage('change2Black', (response) => {
             //$('#mes').html(response);
-            alert(response);
+            //alert(response);
         });
     }
 }
