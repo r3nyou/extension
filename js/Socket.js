@@ -23,8 +23,6 @@ const IDListenr = chrome.runtime.onMessage.addListener((request, sender, sendRes
 
 const connection = function(uid) {
 
-    console.log('connection');
-
     const socket = io('http://127.0.0.1:3120');
 
     socket.on('connect', function() {
@@ -40,8 +38,6 @@ const broadcast = function() {
 
 };
 
-//init;
-$( document ).ready(function() {
-    //connection('FD059C816EC2BE52EC2E402EC9A31FDD');
+$( document ).ready(function() {    
     getID;
 });
