@@ -103,6 +103,13 @@ function setBlackUrl() {
         showBlackList();
         //alert('新增成功: ' + add);
         $('#blackInput').val('');
+
+        let list = JSON.stringify({
+            'new list': data,
+            'add': add,
+        });
+        console.log('add blackUrl');
+        bgpage.boardcast('add blackUrl', list);
     }
 }
 
@@ -124,15 +131,34 @@ function setWhiteUrl() {
         showWhiteList();
         //alert('新增成功: ' + add);
         $('#whiteInput').val('');
+
+        let list = JSON.stringify({
+            'new list': data,
+            'add': add,
+        });
+        console.log('add whiteUrl');
+        bgpage.boardcast('add whiteUrl', list);
     }
 }
 
 function removeBlackUrl(url) {
     bgpage.block.blackUrl.splice(bgpage.block.blackUrl.indexOf(url), 1);
+    
+    let data = JSON.stringify({
+        'new list': JSON.stringify(bgpage.block.blackUrl),
+        'remove': url,
+    });    
+    bgpage.boardcast('update blackUrl', data);
 }
 
 function removeWhiteUrl(url) {
     bgpage.block.whiteUrl.splice(bgpage.block.whiteUrl.indexOf(url), 1);
+
+    let data = JSON.stringify({
+        'new list': JSON.stringify(bgpage.block.blackUrl),
+        'remove': url,
+    });    
+    bgpage.boardcast('update whiteUrl', data);
 }
 
 function showBlackList() {
@@ -173,7 +199,7 @@ function showWhiteList() {
     });
 }
 
-function spawnLabDeletBtn(element) {
+function spawnLabDeletBtn(element) {    
     // var str = "<tr><td></td><td>" + element + "</td><td></td><td></td><td>";
     var str = "<tr><td style='padding-left:80px;' colspan='5'>" + element + "</td><td>";
     str += '<button data-toggle="tooltip" id="' + element + '" title="" class="pd-setting-ed"data-original-title="Trash"><i class="fa fa-trash-o"aria-hidden="true"></i></button></td></tr>';
@@ -269,6 +295,15 @@ getPW();
 
 chrome.storage.onChanged.addListener(function (changes, namespace) {
     for (key in changes) {
+        switch(key) {
+            case 'blackUrl':
+                showBlackList();
+                break;
+            case 'whiteUrl':
+                showWhiteList();
+                break;
+        }
+
         var storageChange = changes[key];
 
         console.log('儲存鍵“%s”（位於“%s”命名空間中）已更改。' +

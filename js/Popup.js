@@ -110,6 +110,17 @@ function delayInMinutesIncrease() {
 
 function startBloking() {
     if (!bgpage.block.blockIt) {
+
+        let mode = bgpage.block.whiteMode ? 'whiteUrl' : 'blackUrl';
+
+        let msg = JSON.stringify({
+            'mode': mode,
+            'timestamp': new Date().getTime(),
+            'duration': $('#forDelayInMinutes').html(),
+        });
+        //console.log(msg);
+        bgpage.boardcast("start", msg);
+
         chrome.runtime.sendMessage('Hello', (response) => {
             //$('#mes').html(response);
         });
@@ -121,9 +132,27 @@ function startBloking() {
 
 function stopBloking() {
     if (bgpage.block.blockIt) {
+
+        let msg = JSON.stringify({
+            'tmp': 'tmp',
+        });
+        bgpage.boardcast("stop", msg);
+
         chrome.runtime.sendMessage('Bye', (response) => {
             $('#mes').html(response);
         });
+        $("#timeDecrease").css("display", "inline");
+        $("#timeIncrease").css("display", "inline");
+        $('#btnStart').html("開始");
+    }
+}
+
+function blockToggle(type) {
+    if (type == 'start') {
+        $("#timeDecrease").css("display", "none");
+        $("#timeIncrease").css("display", "none");
+        $('#btnStart').html("放棄");
+    } else if (type == 'stop') {
         $("#timeDecrease").css("display", "inline");
         $("#timeIncrease").css("display", "inline");
         $('#btnStart').html("開始");
@@ -158,3 +187,20 @@ setInterval(() => {
         $('#mes').html(h + ":" + m + ":" + s);
     }
 }, 100);
+
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+    for (key in changes) {
+        if(key == 'blockStatus') {
+            blockToggle(changes[key].newValue);
+        }
+
+        var storageChange = changes[key];
+
+        console.log('儲存鍵“%s”（位於“%s”命名空間中）已更改。' +
+            '原來的值為“%s”，新的值為“%s”。',
+            key,
+            namespace,
+            storageChange.oldValue,
+            storageChange.newValue);
+    }
+});
