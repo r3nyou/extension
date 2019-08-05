@@ -58,9 +58,9 @@ function setID(uid) {
 function getPW() {
     chrome.storage.sync.get("password", function (storage) {
         if (bgpage.block.blockIt) {
-            $("#timeDecrease").css("display", "none");
-            $("#timeIncrease").css("display", "none");
-            $('#btnStart').html("放棄");
+            //$("#timeDecrease").css("display", "none");
+            //$("#timeIncrease").css("display", "none");
+            $('#btnStart').html("取消");
         }
         if (storage.password === undefined) {
             // alert('還沒設定密碼');
@@ -123,10 +123,12 @@ function startBloking() {
 
         chrome.runtime.sendMessage('Hello', (response) => {
             //$('#mes').html(response);
+            $('#mes').html(response + ':00');
+            $("#set-area, #clock-area").toggle();
         });
-        $("#timeDecrease").css("display", "none");
-        $("#timeIncrease").css("display", "none");
-        $('#btnStart').html("放棄");
+        //$("#timeDecrease").css("display", "none");
+        //$("#timeIncrease").css("display", "none");
+        $('#btnStart').html("取消");
     }
 }
 
@@ -140,26 +142,39 @@ function stopBloking() {
 
         chrome.runtime.sendMessage('Bye', (response) => {
             $('#mes').html(response);
+            $("#set-area, #clock-area").toggle();
         });
-        $("#timeDecrease").css("display", "inline");
-        $("#timeIncrease").css("display", "inline");
+        //$("#timeDecrease").css("display", "inline");
+        //$("#timeIncrease").css("display", "inline");
         $('#btnStart').html("開始");
     }
 }
 
 function blockToggle(type) {
     if (type == 'start') {
-        $("#timeDecrease").css("display", "none");
-        $("#timeIncrease").css("display", "none");
-        $('#btnStart').html("放棄");
+        //$("#timeDecrease").css("display", "none");
+        //$("#timeIncrease").css("display", "none");
+        $('#btnStart').html("取消");
     } else if (type == 'stop') {
-        $("#timeDecrease").css("display", "inline");
-        $("#timeIncrease").css("display", "inline");
+        //$("#timeDecrease").css("display", "inline");
+        //$("#timeIncrease").css("display", "inline");
         $('#btnStart').html("開始");
     }
+    $("#set-area, #clock-area").toggle();
 }
 
-$('#forDelayInMinutes').html(bgpage.alarm.alarmInfo.delayInMinutes);
+function syncStatus() {
+    chrome.storage.sync.get("blockStatus", function (storage) {
+        if(storage.blockStatus == 'start') {
+            blockToggle(storage.blockStatus);
+        }
+        console.log(storage.blockStatus);
+    });
+}
+
+syncStatus();
+
+//$('#forDelayInMinutes').html(bgpage.alarm.alarmInfo.delayInMinutes);
 
 $('#timeDecrease').click(() => {
     delayInMinutesDecrease();
@@ -169,7 +184,8 @@ $('#timeIncrease').click(() => {
     delayInMinutesIncrease();
 });
 
-$('#btnStart').click(() => {
+$('#btnStart').click(() => {    
+    //$("#timeDecrease, #timeIncrease").toggle();
     startBloking();
     stopBloking();
 });
@@ -184,7 +200,8 @@ setInterval(() => {
         m = m >= 1 ? m : ('0');
         m = m >= 10 ? m : ('0' + m);
         s = s >= 10 ? s : ('0' + s);
-        $('#mes').html(h + ":" + m + ":" + s);
+        //$('#mes').html(h + ":" + m + ":" + s);
+        $('#mes').html(m + ":" + s);
     }
 }, 100);
 
@@ -193,5 +210,14 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
         if(key == 'blockStatus') {
             blockToggle(changes[key].newValue);
         }
+
+        var storageChange = changes[key];
+
+        console.log('儲存鍵“%s”（位於“%s”命名空間中）已更改。' +
+            '原來的值為“%s”，新的值為“%s”。',
+            key,
+            namespace,
+            storageChange.oldValue,
+            storageChange.newValue);
     }
 });

@@ -23,7 +23,9 @@ class Alarm {
 
         chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if (message == 'Hello') {                
-                sendResponse('Hello from background.');
+                //sendResponse('Hello from background.');
+                sendResponse(this.alarmInfo.delayInMinutes);
+
                 block.blockIt = true;
                 this.timeStart = Date.now() / 1000;
                 chrome.alarms.create('anAlarm', this.alarmInfo);
@@ -40,7 +42,8 @@ class Alarm {
 
         chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if (message == 'Bye') {
-                sendResponse('Bye from background.');
+                //sendResponse('Bye from background.');
+                sendResponse(this.alarmInfo.delayInMinutes);
                 block.blockIt = false;
                 clearInterval(this.timerId);
                 
