@@ -193,14 +193,5 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
         if(key == 'blockStatus') {
             blockToggle(changes[key].newValue);
         }
-
-        var storageChange = changes[key];
-
-        console.log('儲存鍵“%s”（位於“%s”命名空間中）已更改。' +
-            '原來的值為“%s”，新的值為“%s”。',
-            key,
-            namespace,
-            storageChange.oldValue,
-            storageChange.newValue);
     }
 });

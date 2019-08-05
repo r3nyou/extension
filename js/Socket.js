@@ -25,7 +25,7 @@ const IDListenr = chrome.runtime.onMessage.addListener((request, sender, sendRes
 let socket = null;
 const connection = function(uid) {
 
-    socket = io('http://192.168.1.101:3120');
+    socket = io('http://192.168.1.55:3120');
 
     socket.on('connect', function() {
         socket.emit('login', uid);
@@ -95,6 +95,13 @@ function execute(content) {
         case 'start':
             chrome.storage.sync.set({ "blockStatus": 'start' }, function () {
             });
+            if(msg.mode == 'whiteUrl') {
+                bgpage.block.whiteMode = true;
+                bgpage.block.blackMode = false;
+            } else if (msg.mode == 'blackUrl') {
+                bgpage.block.whiteMode = false;
+                bgpage.block.blackMode = true;
+            }
             alarm.start(msg.duration);
             break;
         
