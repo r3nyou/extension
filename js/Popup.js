@@ -121,10 +121,12 @@ function startBloking() {
         //console.log(msg);
         bgpage.boardcast("start", msg);
 
+        chrome.storage.sync.set({ "blockStatus": 'start' }, function () {
+        });
+
         chrome.runtime.sendMessage('Hello', (response) => {
             //$('#mes').html(response);
             $('#mes').html(response + ':00');
-            $("#set-area, #clock-area").toggle();
         });
         //$("#timeDecrease").css("display", "none");
         //$("#timeIncrease").css("display", "none");
@@ -140,9 +142,11 @@ function stopBloking() {
         });
         bgpage.boardcast("stop", msg);
 
+        chrome.storage.sync.set({ "blockStatus": 'stop' }, function () {
+        });
+
         chrome.runtime.sendMessage('Bye', (response) => {
-            $('#mes').html(response);
-            $("#set-area, #clock-area").toggle();
+            $('#mes').html(response);            
         });
         //$("#timeDecrease").css("display", "inline");
         //$("#timeIncrease").css("display", "inline");
@@ -154,13 +158,16 @@ function blockToggle(type) {
     if (type == 'start') {
         //$("#timeDecrease").css("display", "none");
         //$("#timeIncrease").css("display", "none");
+        $("#set-area").css("display", "none");
+        $("#clock-area").css("display", "block");
         $('#btnStart').html("取消");
     } else if (type == 'stop') {
         //$("#timeDecrease").css("display", "inline");
         //$("#timeIncrease").css("display", "inline");
+        $("#set-area").css("display", "block");
+        $("#clock-area").css("display", "none");
         $('#btnStart').html("開始");
-    }
-    $("#set-area, #clock-area").toggle();
+    }    
 }
 
 function syncStatus() {
@@ -186,6 +193,7 @@ $('#timeIncrease').click(() => {
 
 $('#btnStart').click(() => {    
     //$("#timeDecrease, #timeIncrease").toggle();
+    $("#set-area, #clock-area").toggle();
     startBloking();
     stopBloking();
 });
@@ -210,14 +218,5 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
         if(key == 'blockStatus') {
             blockToggle(changes[key].newValue);
         }
-
-        var storageChange = changes[key];
-
-        console.log('儲存鍵“%s”（位於“%s”命名空間中）已更改。' +
-            '原來的值為“%s”，新的值為“%s”。',
-            key,
-            namespace,
-            storageChange.oldValue,
-            storageChange.newValue);
     }
 });
