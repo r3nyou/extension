@@ -337,3 +337,24 @@ function BWSwitch() {
         });
     }
 }
+
+/** forget password */
+$("#forget").on("click", function() {
+    chrome.storage.sync.get("id", function (storage) {
+        if(storage.id) {
+            var getUrl = 'http://localhost/extension_backend/api/user/get_password.php?id='+storage.id;
+            $.get(getUrl, function(data){
+                console.log(data);
+
+                sentMail(data.email, data.password)
+            });
+        }
+    });
+});
+
+function sentMail(email, password) {
+    var getUrl = 'http://104.199.202.192/mailer/sendMail.php?password='+ password +'&email=' + email;
+    $.get(getUrl, function(data){        
+    });
+    alert('請至信箱確認');
+}
