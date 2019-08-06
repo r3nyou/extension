@@ -30,6 +30,13 @@ class Alarm {
                 this.timeStart = Date.now() / 1000;
                 chrome.alarms.create('anAlarm', this.alarmInfo);
 
+                let data = JSON.stringify({
+                    'timestap': Date.now(),
+                    'duration': this.alarmInfo.delayInMinutes
+                });
+                chrome.storage.sync.set({ "blockduration": data }, function () {
+                });
+
                 chrome.alarms.onAlarm.addListener(() => {
                     block.blockIt = false;
                 });
@@ -46,6 +53,9 @@ class Alarm {
                 sendResponse(this.alarmInfo.delayInMinutes);
                 block.blockIt = false;
                 clearInterval(this.timerId);
+
+                chrome.storage.sync.set({ "blockduration": 'stop' }, function () {
+                });
                 
                 chrome.alarms.clearAll();
             }
@@ -58,6 +68,13 @@ class Alarm {
         block.blockIt = true;
         this.timeStart = Date.now() / 1000;
         chrome.alarms.create('anAlarm', this.alarmInfo);
+        
+        let data = JSON.stringify({
+            'timestap': Date.now(),
+            'duration': duration
+        });
+        chrome.storage.sync.set({ "blockduration": data }, function () {
+        });
 
         chrome.alarms.onAlarm.addListener(() => {
             block.blockIt = false;
@@ -72,8 +89,23 @@ class Alarm {
         block.blockIt = false;
         clearInterval(this.timerId);        
         chrome.alarms.clearAll();
+
+        chrome.storage.sync.set({ "blockduration": 'stop' }, function () {
+        });
     }
 }
 
 alarm = new Alarm();
 alarm.alarm();
+
+chrome.storage.sync.get("blockduration", function (storage) {
+    if(storage.blockduration != 'stop') {
+        let data = JSON.parse(storage.blockduration);
+
+        //alarm.start(data.duration - ((Date.now() - data.timestap) / 6000));
+        alarm.start(data.duration);
+        console.log(data);
+    } else {
+        console.log('blockduration stop');
+    }
+});

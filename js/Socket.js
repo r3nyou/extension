@@ -25,7 +25,7 @@ const IDListenr = chrome.runtime.onMessage.addListener((request, sender, sendRes
 let socket = null;
 const connection = function(uid) {
 
-    socket = io('http://192.168.1.55:3120');
+    socket = io('http://192.168.1.101:3120');
 
     socket.on('connect', function() {
         socket.emit('login', uid);
@@ -43,7 +43,6 @@ const connection = function(uid) {
 };
 
 function boardcast(cmd, msg) {
-    console.log(uid);
     let content = JSON.stringify({
         'cmd': cmd,
         'msg': msg,
