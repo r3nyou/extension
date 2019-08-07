@@ -432,8 +432,7 @@ $("#forget").on("click", function() {
         if(storage.id) {
             var getUrl = 'http://35.201.195.234/extension_backend/api/user/get_password.php?id='+storage.id;
             $.get(getUrl, function(data){
-                console.log(data);
-
+                //console.log(data);
                 sentMail(data.email, data.password)
             });
         }

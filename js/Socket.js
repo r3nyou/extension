@@ -3,28 +3,32 @@ document.writeln("<script src='js/socket.io.js'></script>");
 const bgpage = chrome.extension.getBackgroundPage();
 let uid = null;
 
-const getID = chrome.storage.sync.get("id", function (storage) {
+const getID = chrome.storage.sync.get("id", function (storage) {  
     if (storage.id != undefined) {
-        connection(storage.id);
+        console.log('getID connected');
         uid = storage.id;
+        connection();        
     } else {
         console.log('go to IDListner');
         IDListenr;
     }
 });
 
-const IDListenr = chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {   
-    
-    if (request.msg == 'createUrl') {
-        getID;
+const IDListenr = chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {    
+    if (request.msg == 'createUrl') {        
+        chrome.storage.sync.get("id", function (storage) {
+            console.log('IDListenr connected');
+            uid = storage.id;
+            connection();
+        });
         sendResponse('socket connected');
     }
     sendResponse('socket connected');    
 });
 
 let socket = null;
-const connection = function(uid) {
-
+const connection = function() {
+    console.log('connection id: ' + uid);
     socket = io('http://35.201.195.234:3120');
 
     socket.on('connect', function() {
