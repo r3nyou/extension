@@ -99,7 +99,7 @@ alarm = new Alarm();
 alarm.alarm();
 
 chrome.storage.sync.get("blockduration", function (storage) {
-    if(storage.blockduration != 'stop') {
+    if(storage.blockduration != 'stop' && storage.blockduration) {
         let data = JSON.parse(storage.blockduration);
 
         //alarm.start(data.duration - ((Date.now() - data.timestap) / 6000));
