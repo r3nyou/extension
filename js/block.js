@@ -211,7 +211,7 @@ Block.prototype.needPWSwitch = () => {
 /* 初始化 */
 
 Block.prototype.createUrl = function (createBlack, createWhite, createDB, getBlack, getWhite, setBlack, setWhite) {
-	chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {		
+	chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 		if (request.msg == 'createUrl') {
 			createBlack()
 			.then(createWhite)

@@ -158,6 +158,13 @@ function setBlackUrl() {
         showBlackList();
         //alert('新增成功: ' + add);
         $('#blackInput').val('');
+
+        let list = JSON.stringify({
+            'new list': data,
+            'add': add,
+        });
+        console.log('add blackUrl');
+        bgpage.boardcast('add blackUrl', list);
     }
 }
 
@@ -179,15 +186,34 @@ function setWhiteUrl() {
         showWhiteList();
         //alert('新增成功: ' + add);
         $('#whiteInput').val('');
+
+        let list = JSON.stringify({
+            'new list': data,
+            'add': add,
+        });
+        console.log('add whiteUrl');
+        bgpage.boardcast('add whiteUrl', list);
     }
 }
 
 function removeBlackUrl(url) {
     bgpage.block.blackUrl.splice(bgpage.block.blackUrl.indexOf(url), 1);
+    
+    let data = JSON.stringify({
+        'new list': JSON.stringify(bgpage.block.blackUrl),
+        'remove': url,
+    });    
+    bgpage.boardcast('update blackUrl', data);
 }
 
 function removeWhiteUrl(url) {
     bgpage.block.whiteUrl.splice(bgpage.block.whiteUrl.indexOf(url), 1);
+
+    let data = JSON.stringify({
+        'new list': JSON.stringify(bgpage.block.blackUrl),
+        'remove': url,
+    });    
+    bgpage.boardcast('update whiteUrl', data);
 }
 
 function showBlackList() {
@@ -236,7 +262,7 @@ function showWhiteList() {
     });
 }
 
-function spawnLabDeletBtn(element) {
+function spawnLabDeletBtn(element) {    
     // var str = "<tr><td></td><td>" + element + "</td><td></td><td></td><td>";
     var str = "<tr><td colspan='4'>" + element + "</td><td>";
     str += '<button data-toggle="tooltip" id="' + element + '" title="" class="pd-setting-ed"data-original-title="Trash"><i class="fa fa-trash-o"aria-hidden="true"></i></button></td></tr>';
@@ -338,6 +364,15 @@ getPW();
 
 chrome.storage.onChanged.addListener(function (changes, namespace) {
     for (key in changes) {
+        switch(key) {
+            case 'blackUrl':
+                showBlackList();
+                break;
+            case 'whiteUrl':
+                showWhiteList();
+                break;
+        }
+
         var storageChange = changes[key];
 
         console.log('儲存鍵“%s”（位於“%s”命名空間中）已更改。' +
@@ -389,4 +424,25 @@ function needPWSwitch() {
             //alert(response);
         });
     }
+}
+
+/** forget password */
+$("#forget").on("click", function() {
+    chrome.storage.sync.get("id", function (storage) {
+        if(storage.id) {
+            var getUrl = 'http://35.201.195.234/extension_backend/api/user/get_password.php?id='+storage.id;
+            $.get(getUrl, function(data){
+                console.log(data);
+
+                sentMail(data.email, data.password)
+            });
+        }
+    });
+});
+
+function sentMail(email, password) {
+    var getUrl = 'http://104.199.202.192/mailer/sendMail.php?password='+ password +'&email=' + email;
+    $.get(getUrl, function(data){        
+    });
+    alert('請至信箱確認');
 }

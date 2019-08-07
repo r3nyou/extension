@@ -40,7 +40,7 @@ function setIDtoDB(id, password, email) {
         contentType: 'application/json; charset=UTF-8',
         data: postData,
         success: function (msg) {
-            
+
             setID(msg.id);
         }
     });
@@ -59,9 +59,9 @@ function setID(uid) {
 function getPW() {
     chrome.storage.sync.get("password", function (storage) {
         if (bgpage.block.blockIt) {
-            $("#timeDecrease").css("display", "none");
-            $("#timeIncrease").css("display", "none");
-            $('#btnStart').html("放棄");
+            //$("#timeDecrease").css("display", "none");
+            //$("#timeIncrease").css("display", "none");
+            $('#btnStart').html("取消");
         }
         if (storage.password === undefined) {
             // alert('還沒設定密碼');
@@ -69,10 +69,11 @@ function getPW() {
             $("#startMode").css("display", "block");
         } else {
             if (bgpage.block.needPW) {
-            //alert('密碼是: ' + storage.password);
-            $("#loginMode").css("display", "block");
-            $("#startMode").css("display", "none");
-            $("#inputPassword").focus();
+                //alert('密碼是: ' + storage.password);
+                $("#loginMode").css("display", "block");
+                $("#startMode").css("display", "none");
+                $("#inputPassword").focus();
+            }
         }
     });
 }
@@ -112,27 +113,78 @@ function delayInMinutesIncrease() {
 
 function startBloking() {
     if (!bgpage.block.blockIt) {
+
+        let mode = bgpage.block.whiteMode ? 'whiteUrl' : 'blackUrl';
+
+        let msg = JSON.stringify({
+            'mode': mode,
+            'timestamp': new Date().getTime(),
+            'duration': $('#forDelayInMinutes').html(),
+        });
+        //console.log(msg);
+        bgpage.boardcast("start", msg);
+
+        chrome.storage.sync.set({ "blockStatus": 'start' }, function () {
+        });
+
         chrome.runtime.sendMessage('Hello', (response) => {
             //$('#mes').html(response);
+            $('#mes').html(response + ':00');
         });
-        $("#timeDecrease").css("display", "none");
-        $("#timeIncrease").css("display", "none");
-        $('#btnStart').html("放棄");
+        //$("#timeDecrease").css("display", "none");
+        //$("#timeIncrease").css("display", "none");
+        $('#btnStart').html("取消");
     }
 }
 
 function stopBloking() {
     if (bgpage.block.blockIt) {
+
+        let msg = JSON.stringify({
+            'tmp': 'tmp',
+        });
+        bgpage.boardcast("stop", msg);
+
+        chrome.storage.sync.set({ "blockStatus": 'stop' }, function () {
+        });
+
         chrome.runtime.sendMessage('Bye', (response) => {
             $('#mes').html(response);
         });
-        $("#timeDecrease").css("display", "inline");
-        $("#timeIncrease").css("display", "inline");
+        //$("#timeDecrease").css("display", "inline");
+        //$("#timeIncrease").css("display", "inline");
         $('#btnStart').html("開始");
     }
 }
 
-$('#forDelayInMinutes').html(bgpage.alarm.alarmInfo.delayInMinutes);
+function blockToggle(type) {
+    if (type == 'start') {
+        //$("#timeDecrease").css("display", "none");
+        //$("#timeIncrease").css("display", "none");
+        $("#set-area").css("display", "none");
+        $("#clock-area").css("display", "block");
+        $('#btnStart').html("取消");
+    } else if (type == 'stop') {
+        //$("#timeDecrease").css("display", "inline");
+        //$("#timeIncrease").css("display", "inline");
+        $("#set-area").css("display", "block");
+        $("#clock-area").css("display", "none");
+        $('#btnStart').html("開始");
+    }
+}
+
+function syncStatus() {
+    chrome.storage.sync.get("blockStatus", function (storage) {
+        if (storage.blockStatus == 'start') {
+            blockToggle(storage.blockStatus);
+        }
+        console.log(storage.blockStatus);
+    });
+}
+
+syncStatus();
+
+//$('#forDelayInMinutes').html(bgpage.alarm.alarmInfo.delayInMinutes);
 
 $('#timeDecrease').click(() => {
     delayInMinutesDecrease();
@@ -143,6 +195,8 @@ $('#timeIncrease').click(() => {
 });
 
 $('#btnStart').click(() => {
+    //$("#timeDecrease, #timeIncrease").toggle();
+    $("#set-area, #clock-area").toggle();
     startBloking();
     stopBloking();
 });
@@ -157,6 +211,15 @@ setInterval(() => {
         m = m >= 1 ? m : ('0');
         m = m >= 10 ? m : ('0' + m);
         s = s >= 10 ? s : ('0' + s);
-        $('#mes').html(h + ":" + m + ":" + s);
+        //$('#mes').html(h + ":" + m + ":" + s);
+        $('#mes').html(m + ":" + s);
     }
 }, 100);
+
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+    for (key in changes) {
+        if (key == 'blockStatus') {
+            blockToggle(changes[key].newValue);
+        }
+    }
+});
