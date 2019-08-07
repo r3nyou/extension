@@ -13,6 +13,8 @@ var Block = function () {
 	this.whiteUrl = initWhiteList;
 	this.blackMode = true;
 	this.whiteMode = false;
+	this.needPW = true;
+	this.havePW = false;
 }
 
 Block.prototype.createBlack = function () {
@@ -40,7 +42,7 @@ Block.prototype.createUrltoDB = function () {
 			"whiteUrl": JSON.stringify(initWhiteList)
 		});
 
-		var postUrl = 'http://localhost/extension_backend/api/list/create.php';
+		var postUrl = 'http://35.201.195.234/extension_backend/api/list/create.php';
 
 		$.ajax({
 			type: 'POST',
@@ -190,6 +192,22 @@ Block.prototype.BWSwitch = () => {
 	});
 }
 
+Block.prototype.needPWSwitch = () => {
+	chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+		if (message == 'no need') {
+			sendResponse('change2off.');
+			block.needPW = !block.needPW;
+		}
+	});
+
+	chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+		if (message == 'need') {
+			sendResponse('change2on.');
+			block.needPW = !block.needPW;
+		}
+	});
+}
+
 /* 初始化 */
 
 Block.prototype.createUrl = function (createBlack, createWhite, createDB, getBlack, getWhite, setBlack, setWhite) {
@@ -240,3 +258,4 @@ block.syncUrl(
 );
 
 block.BWSwitch();
+block.needPWSwitch();

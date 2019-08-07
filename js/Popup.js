@@ -31,7 +31,7 @@ function setIDtoDB(id, password, email) {
         "email": ""
     });
 
-    var postUrl = 'http://localhost/extension_backend/api/user/create.php';
+    var postUrl = 'http://35.201.195.234/extension_backend/api/user/create.php';
 
     $.ajax({
         type: 'POST',
@@ -40,6 +40,7 @@ function setIDtoDB(id, password, email) {
         contentType: 'application/json; charset=UTF-8',
         data: postData,
         success: function (msg) {
+            
             setID(msg.id);
         }
     });
@@ -67,6 +68,7 @@ function getPW() {
             $("#loginMode").css("display", "none");
             $("#startMode").css("display", "block");
         } else {
+            if (bgpage.block.needPW) {
             //alert('密碼是: ' + storage.password);
             $("#loginMode").css("display", "block");
             $("#startMode").css("display", "none");

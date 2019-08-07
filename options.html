@@ -58,42 +58,47 @@
   <div class="container-fluid" id="optionMode" style="display: block">
     <div class="row content">
       <div class="col-sm-3 sidenav">
-        <h4>磚注</h4>
-        <ul class="nav nav-tabs nav-pills nav-stacked flex-column" role="tablist">
-          <li role="presentation"><a href="#black" aria-controls="black" role="tab" data-toggle="tab">設定黑名單</a></li>
-          <li role="presentation"><a href="#white" aria-controls="white" role="tab" data-toggle="tab">設定白名單</a></li>
-          <li role="presentation"><a href="#passwordInfo" aria-controls="passwordInfo" role="tab"
-              data-toggle="tab">密碼(保護)設定</a></li>
+        <h4 style='padding-top:20px'>磚注</h4>
+        <ul class="nav nav-tabs nav-pills nav-stacked flex-column" role="tablist" style='padding-left:20px'>
+          <li role="presentation"><a href="#black" aria-controls="black" role="tab" data-toggle="tab"
+              style="line-height: 40px">設定黑名單</a></li>
+          <li role="presentation"><a href="#white" aria-controls="white" role="tab" data-toggle="tab"
+              style="line-height: 40px">設定白名單</a></li>
+          <li role="presentation"><a href="#passwordInfo" aria-controls="passwordInfo" role="tab" data-toggle="tab"
+              style="line-height: 40px">密碼(保護)設定</a></li>
           <!-- <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">城鎮</a></li> -->
-          <li role="presentation"><a href="#info" aria-controls="info" role="tab" data-toggle="tab">說明頁面</a></li>
+          <li role="presentation"><a href="#info" aria-controls="info" role="tab" data-toggle="tab"
+              style="line-height: 40px">說明頁面</a></li>
         </ul>
-        <div id="BWSwitch">
+        <div id="BWSwitch"style="line-height: 60px">
           阻擋模式: <input type="checkbox" data-toggle="switchbutton" checked data-onlabel="黑名單" data-offlabel="白名單"
             data-onstyle="dark" data-offstyle="light">
         </div>
-        <div id="BWSwitch4White">
+        <div id="BWSwitch4White"style="line-height: 60px">
           阻擋模式: <input type="checkbox" data-toggle="switchbutton" data-onlabel="黑名單" data-offlabel="白名單"
             data-onstyle="dark" data-offstyle="light">
+        </div>
+        <div id="PWSwitch"style="line-height: 60px">
+          密碼保護: <input type="checkbox" data-toggle="switchbutton" checked data-onlabel="開啟" data-offlabel="關閉"
+            data-onstyle="primary" data-offstyle="light">
+        </div>
+        <div id="PWSwitch4Off"style="line-height: 60px">
+          密碼保護: <input type="checkbox" data-toggle="switchbutton" data-onlabel="開啟" data-offlabel="關閉"
+            data-onstyle="primary" data-offstyle="light">
         </div>
       </div>
 
       <div class="tab-content col-sm-9 optionsContent">
 
         <!--設定黑名單-->
-        <div role="tabpanel" class="tab-pane fade show active" id="black">
+        <div style='padding-left:40px' role="tabpanel" class="tab-pane fade show active" id="black">
+          <br><span>黑名單設定</span><br><br>
           <input id="blackInput" name="blackInput" placeholder="輸入網址(例如: facebook)" />
           <button id="blackSet" class="btn btn-success" type="">Set</button>
           <div class="product-status-wrap drp-lst">
             <div class="asset-inner">
               <table>
                 <tbody id="blackList">
-                  <tr>
-                    <th></th>
-                    <th>封鎖的網站</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                  </tr>
                 </tbody>
               </table>
             </div>
@@ -101,33 +106,35 @@
         </div>
 
         <!--設定白名單-->
-        <div role="tabpanel" class="tab-pane fade" id="white">
+        <div style='padding-left:40px' role="tabpanel" class="tab-pane fade" id="white">
+          <br><span>白名單設定</span><br><br>
           <input id="whiteInput" name="whiteInput" placeholder="輸入網址(例如: facebook)" />
           <button id="whiteSet" class="btn btn-success" type="">Set</button>
           <div class="product-status-wrap drp-lst">
             <div class="asset-inner">
               <table>
                 <tbody id="whiteList">
-                  <tr>
-                    <th></th>
-                    <th>封鎖的網站</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                  </tr>
                 </tbody>
               </table>
             </div>
           </div>
         </div>
 
-        <div role="tabpanel" class="tab-pane fade" id="passwordInfo">
-          <input id="password" type="password" class="" name="password" placeholder="Password" />
+        <div style='padding-left:40px' role="tabpanel" class="tab-pane fade" id="passwordInfo">
+          <br><span>密碼(保護)設定</span><br><span id="err4PW" class="text-danger"></span><br>
+          <input id="password" type="password" class="" name="password" placeholder="Password(長度4至10)" />
+          <!-- <button id="btnClear" class="btn btn-success" type="">Clear</button> -->
+          <br><br><span>信箱綁定(無法更改)</span><br><span id="err4EM" class="tab-pane fade"></span><br>
+          <input id="email" class="" placeholder="E-mail" />
           <button id="btnSet" class="btn btn-success" type="">Set</button>
-          <button id="btnClear" class="btn btn-success" type="">Clear</button>
         </div>
-        <div role="tabpanel" class="tab-pane fade" id="settings">4</div>
-        <div role="tabpanel" class="tab-pane fade" id="info">5</div>
+        <div style='padding-left:40px' role="tabpanel" class="tab-pane fade" id="settings">
+          <br><span>黑名單設定</span><br><br>
+          4</div>
+        <div style='padding-left:40px' role="tabpanel" class="tab-pane fade" id="info">
+          <br><span>說明頁面</span><br><br>
+          5
+        </div>
       </div>
     </div>
   </div>

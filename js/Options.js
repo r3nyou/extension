@@ -1,40 +1,81 @@
 /* 設定密碼 */
 
 var storage = chrome.storage.sync;
-
 var userID;
 
-function setPWtoDB(password) {
+function setPWEMtoDB(password, email) {
 
     chrome.storage.sync.get("id", function (storage) {
         if (storage.id === undefined) {
             alert('userID 不存在');
         } else {
-            var postData = JSON.stringify({
-                "id": storage.id,
-                "password": password,
-                "email": ""
-            });
+            if (errInputForPWEM(password, email)) {
+                var postData = JSON.stringify({
+                    "id": storage.id,
+                    "password": password,
+                    "email": email
+                });
 
-            var postUrl = 'http://localhost/extension_backend/api/user/update.php';
+                var postUrl = 'http://35.201.195.234/extension_backend/api/user/update.php';
 
-            $.ajax({
-                type: 'PUT',
-                dataType: 'json',
-                url: postUrl,
-                contentType: 'application/json; charset=UTF-8',
-                data: postData,
-                success: function (msg) {
-                    setPW($('#password').val());
-                }
-            });
+                $.ajax({
+                    type: 'PUT',
+                    dataType: 'json',
+                    url: postUrl,
+                    contentType: 'application/json; charset=UTF-8',
+                    data: postData,
+                    success: function (msg) {
+                        setPWEM($('#password').val(), $('#email').val());
+                    }
+                });
+            }
         }
     });
 }
 
-function setPW(password) {
-    chrome.storage.sync.set({ "password": password }, function () {
-        alert('password 新增: ' + password);
+function errInputForPWEM(password, email) {
+    if (password == "") {
+        $('#err4PW').html('欄位不能為空');
+        var timer = setTimeout(() => {
+            $('#err4PW').html('')
+            clearInterval(timer);
+        }, 3000);
+        return false;
+    }
+    if (email == "") {
+        $('#err4EM').html('欄位不能為空');
+        var timer = setTimeout(() => {
+            $('#err4EM').html('')
+            clearInterval(timer);
+        }, 3000);
+        return false;
+    }
+    if (!/^[0-9A-Za-z]{4,10}$/.test(password)) {
+        //alert('限定英文數字組合，長度4~10');
+        $('#err4PW').html('限定英文數字組合，長度4~10')
+        var timer = setTimeout(() => {
+            $('#err4PW').html('')
+            clearInterval(timer);
+        }, 3000);
+        return false;
+    }
+    var emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
+    if (!emailRule.test(email)) {
+        $('#err4PW').html('E-mail格式錯誤')
+        var timer = setTimeout(() => {
+            $('#err4PW').html('')
+            clearInterval(timer);
+        }, 3000);
+        return false;
+    }
+    return true;
+}
+
+
+function setPWEM(password, email) {
+    chrome.storage.sync.set({ "password": password, "email": email }, function () {
+        alert('password 新增: ' + password + '\n email 新增: ' + email);
+        bgpage.block.havePW = true;
     });
 }
 
@@ -47,6 +88,18 @@ function getPW() {
             $("#BWSwitch4White").css("display", "none");
             $("#BWSwitch").css("display", "block");
         }
+        if (bgpage.block.needPW) {
+            $("#PWSwitch").css("display", "block");
+            $("#PWSwitch4Off").css("display", "none");
+        } else {
+            $("#PWSwitch4Off").css("display", "block");
+            $("#PWSwitch").css("display", "none");
+        }
+        if (bgpage.block.havePW) {
+        } else {
+            $("#PWSwitch4Off").css("display", "none");
+            $("#PWSwitch").css("display", "none");
+        }
         showBlackList();
         showWhiteList();
         if (storage.password === undefined) {
@@ -55,10 +108,12 @@ function getPW() {
             $("#optionMode").css("display", "block");
             $("#blackInput").focus();
         } else {
-            /*alert('密碼是: ' + storage.password);*/
-            $("#loginMode").css("display", "block");
-            $("#optionMode").css("display", "none");
-            $("#inputPassword").focus();
+            if (bgpage.block.needPW) {
+                /*alert('密碼是: ' + storage.password);*/
+                $("#loginMode").css("display", "block");
+                $("#optionMode").css("display", "none");
+                $("#inputPassword").focus();
+            }
         }
     });
 }
@@ -148,7 +203,10 @@ function showBlackList() {
                 chrome.storage.sync.set({ "blackUrl": data }, function () {
                     updateUrltoDB('blackUrl', data);
                 });
-                showBlackList();
+                if (bgpage.block.blackUrl.length == 0)
+                    $('#blackList').html("");
+                else
+                    showBlackList();
             });
         });
     });
@@ -157,7 +215,9 @@ function showBlackList() {
 function showWhiteList() {
     chrome.storage.sync.get("whiteUrl", function (storage) {
         bgpage.block.whiteUrl.forEach(element => {
-            if (bgpage.block.whiteUrl.indexOf(element) == 0)
+            if (bgpage.block.whiteUrl.indexOf(element) == 2)
+                $('#whiteList').html("");
+            else if (bgpage.block.whiteUrl.indexOf(element) == 3)
                 $('#whiteList').html(spawnLabDeletBtn(element));
             else
                 $('#whiteList').append(spawnLabDeletBtn(element));
@@ -167,7 +227,10 @@ function showWhiteList() {
                 chrome.storage.sync.set({ "whiteUrl": data }, function () {
                     updateUrltoDB('whiteUrl', data);
                 });
-                showWhiteList();
+                if (bgpage.block.whiteUrl.length == 3)
+                    $('#whiteList').html("");
+                else
+                    showWhiteList();
             });
         });
     });
@@ -175,7 +238,7 @@ function showWhiteList() {
 
 function spawnLabDeletBtn(element) {
     // var str = "<tr><td></td><td>" + element + "</td><td></td><td></td><td>";
-    var str = "<tr><td style='padding-left:80px;' colspan='5'>" + element + "</td><td>";
+    var str = "<tr><td colspan='4'>" + element + "</td><td>";
     str += '<button data-toggle="tooltip" id="' + element + '" title="" class="pd-setting-ed"data-original-title="Trash"><i class="fa fa-trash-o"aria-hidden="true"></i></button></td></tr>';
     return str;
 }
@@ -211,7 +274,7 @@ function updateUrltoDB(type, newUrl) {
             });
         }
 
-        var postUrl = 'http://localhost/extension_backend/api/list/update.php';
+        var postUrl = 'http://35.201.195.234/extension_backend/api/list/update.php';
 
         $.ajax({
             type: 'PUT',
@@ -244,8 +307,14 @@ $('#whiteInput').keydown((e) => {
     }
 });
 
+$('#btnSet').keydown((e) => {
+    if (e.code == "Enter") {
+        setPWEMtoDB($('#password').val(), $('#email').val());
+    }
+});
+
 $('#btnSet').click(function () {
-    setPWtoDB($('#password').val());
+    setPWEMtoDB($('#password').val(), $('#email').val());
 });
 
 $('#btnClear').click(function () {
@@ -288,7 +357,6 @@ $('#BWSwitch').click(function () {
 $('#BWSwitch4White').click(function () {
     BWSwitch()
 });
-
 function BWSwitch() {
     if (bgpage.block.blackMode) {
         chrome.runtime.sendMessage('change2White', (response) => {
@@ -297,6 +365,26 @@ function BWSwitch() {
         });
     } else {
         chrome.runtime.sendMessage('change2Black', (response) => {
+            //$('#mes').html(response);
+            //alert(response);
+        });
+    }
+}
+
+$('#PWSwitch').click(function () {
+    needPWSwitch()
+});
+$('#PWSwitch4Off').click(function () {
+    needPWSwitch()
+});
+function needPWSwitch() {
+    if (bgpage.block.needPW) {
+        chrome.runtime.sendMessage('no need', (response) => {
+            //$('#mes').html(response);
+            //alert(response);
+        });
+    } else {
+        chrome.runtime.sendMessage('need', (response) => {
             //$('#mes').html(response);
             //alert(response);
         });
