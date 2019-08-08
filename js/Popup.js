@@ -48,7 +48,7 @@ function setIDtoDB(id, password, email) {
 
 function setID(uid) {
     chrome.storage.sync.set({ "id": uid }, function () {
-        alert('userID 新增: ' + uid);
+        //alert('userID 新增: ' + uid);
 
         chrome.runtime.sendMessage({ msg: 'createUrl' }, (response) => {
             //$('#mes').html(response);
@@ -112,8 +112,9 @@ function delayInMinutesIncrease() {
 }
 
 function startBloking() {
-    if (!bgpage.block.blockIt) {
 
+    if (!bgpage.block.blockIt) {
+        
         let mode = bgpage.block.whiteMode ? 'whiteUrl' : 'blackUrl';
 
         let msg = JSON.stringify({
@@ -121,7 +122,7 @@ function startBloking() {
             'timestamp': new Date().getTime(),
             'duration': $('#forDelayInMinutes').html(),
         });
-        //console.log(msg);
+        console.log(msg);
         bgpage.boardcast("start", msg);
 
         chrome.storage.sync.set({ "blockStatus": 'start' }, function () {
