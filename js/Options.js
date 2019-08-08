@@ -227,14 +227,10 @@ function showBlackList() {
             chrome.storage.sync.set({ "blackUrl": data }, function () {
                 updateUrltoDB('blackUrl', data);
             });
-            if (bgpage.block.blackUrl.length == 0)
-                $('#blackList').html("");
-            else
-                showBlackList();
         });
     });   
 }
-//const initWhite = ['e'];
+
 function showWhiteList() {
     $('#whiteList').html('');
 
@@ -248,10 +244,6 @@ function showWhiteList() {
                 chrome.storage.sync.set({ "whiteUrl": data }, function () {
                     updateUrltoDB('whiteUrl', data);
                 });
-                if (bgpage.block.whiteUrl.length == 3)
-                    $('#whiteList').html("");
-                else
-                    showWhiteList();
             });
         }
     });    
