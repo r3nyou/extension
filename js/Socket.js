@@ -29,7 +29,7 @@ const IDListenr = chrome.runtime.onMessage.addListener((request, sender, sendRes
 let socket = null;
 const connection = function() {
     console.log('connection id: ' + uid);
-    socket = io('http://192.168.1.60:3120');
+    socket = io('http://35.201.195.234:3120');
 
     socket.on('connect', function() {
         socket.emit('login', uid);

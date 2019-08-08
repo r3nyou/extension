@@ -5,7 +5,7 @@ var initWhiteList = [
 ];
 
 const extensionID = chrome.runtime.id;
-const redirect = 'chrome-extension://' + extensionID + '/blocked.html';
+const redirect = 'chrome-extension://' + extensionID + '/redirect.html';
 
 var Block = function () {
 	this.blockIt = false;
