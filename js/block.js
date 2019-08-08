@@ -4,9 +4,10 @@ var initWhiteList = [
 	"extension"
 ];
 
-var Block = function () {
-	var redirect = "https://www.google.com.tw/";
+const extensionID = chrome.runtime.id;
+const redirect = 'chrome-extension://' + extensionID + '/redirect.html';
 
+var Block = function () {
 	this.blockIt = false;
 	this.blackUrl = [];
 	this.urlRedirect = redirect;
@@ -96,7 +97,7 @@ Block.prototype.blackList = function () {
 					return tab.url.indexOf(url) != -1;
 				});
 				if (isBlack) {
-					chrome.tabs.update({ url: 'https://www.google.com.tw/' });
+					chrome.tabs.update({ url: redirect });
 				}
 			});
 		}
@@ -119,7 +120,7 @@ Block.prototype.blackList = function () {
 					});
 					if (isBlack) {
 						console.log(isBlack);
-						chrome.tabs.update({ url: 'https://www.google.com.tw/' });
+						chrome.tabs.update({ url: redirect });
 					}
 				}
 			});
@@ -142,7 +143,7 @@ Block.prototype.whiteList = function () {
 					return tab.url.indexOf(url) != -1;
 				});
 				if (!isWhite) {
-					chrome.tabs.update({ url: 'https://www.google.com.tw/' });
+					chrome.tabs.update({ url: redirect });
 				}
 			});
 		}
@@ -163,7 +164,7 @@ Block.prototype.whiteList = function () {
 						return changeInfo.url.indexOf(url) != -1;
 					});
 					if (!isWhite) {
-						chrome.tabs.update({ url: 'https://www.google.com.tw/' });
+						chrome.tabs.update({ url: redirect });
 					}
 				}
 			});

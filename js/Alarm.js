@@ -39,6 +39,9 @@ class Alarm {
 
                 chrome.alarms.onAlarm.addListener(() => {
                     block.blockIt = false;
+
+                    chrome.storage.sync.set({ "blockduration": 'stop', "blockStatus":'stop'}, function () {
+                    }); 
                 });
                 this.timerId = setInterval(() => {
                     this.timeNow = Date.now() / 1000;
@@ -54,8 +57,8 @@ class Alarm {
                 block.blockIt = false;
                 clearInterval(this.timerId);
 
-                chrome.storage.sync.set({ "blockduration": 'stop' }, function () {
-                });
+                chrome.storage.sync.set({ "blockduration": 'stop', "blockStatus":'stop'}, function () {
+                });                
                 
                 chrome.alarms.clearAll();
             }
