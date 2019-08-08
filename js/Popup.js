@@ -149,7 +149,7 @@ function stopBloking() {
         });
 
         chrome.runtime.sendMessage('Bye', (response) => {
-            $('#mes').html(response);
+            //$('#mes').html(response);
         });
         //$("#timeDecrease").css("display", "inline");
         //$("#timeIncrease").css("display", "inline");
@@ -195,8 +195,6 @@ $('#timeIncrease').click(() => {
 });
 
 $('#btnStart').click(() => {
-    //$("#timeDecrease, #timeIncrease").toggle();
-    $("#set-area, #clock-area").toggle();
     startBloking();
     stopBloking();
 });
