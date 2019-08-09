@@ -313,49 +313,36 @@ function removeWhiteUrl(url) {
 }
 
 function showBlackList() {
-    chrome.storage.sync.get("blackUrl", function (storage) {
-        bgpage.block.blackUrl.forEach(element => {
-            if (bgpage.block.blackUrl.indexOf(element) == 0)
-                $('#blackList').html(spawnLabDeletBtn(element));
-            else
-                $('#blackList').append(spawnLabDeletBtn(element));
-            $(`#${element}`).click(function () {
-                removeBlackUrl(element);
-                var data = JSON.stringify(bgpage.block.blackUrl);
-                chrome.storage.sync.set({ "blackUrl": data }, function () {
-                    updateUrltoDB('blackUrl', data);
-                });
-                if (bgpage.block.blackUrl.length == 0)
-                    $('#blackList').html("");
-                else
-                    showBlackList();
+    $('#blackList').html('');
+    bgpage.block.blackUrl.forEach(element => {
+        
+        $('#blackList').append(spawnLabDeletBtn(element));
+        $(`#${element}`).click(function () {
+            removeBlackUrl(element);
+            var data = JSON.stringify(bgpage.block.blackUrl);
+            chrome.storage.sync.set({ "blackUrl": data }, function () {
+                updateUrltoDB('blackUrl', data);
             });
         });
-    });
+    });   
 }
 
 function showWhiteList() {
-    chrome.storage.sync.get("whiteUrl", function (storage) {
-        bgpage.block.whiteUrl.forEach(element => {
-            if (bgpage.block.whiteUrl.indexOf(element) == 2)
-                $('#whiteList').html("");
-            else if (bgpage.block.whiteUrl.indexOf(element) == 3)
-                $('#whiteList').html(spawnLabDeletBtn(element));
-            else
-                $('#whiteList').append(spawnLabDeletBtn(element));
+    $('#whiteList').html('');
+
+    bgpage.block.whiteUrl.forEach(element => {
+        if (bgpage.block.whiteUrl.indexOf(element) >=3) {
+            $('#whiteList').append(spawnLabDeletBtn(element));
+                        
             $(`#${element}`).click(function () {
                 removeWhiteUrl(element);
                 var data = JSON.stringify(bgpage.block.whiteUrl);
                 chrome.storage.sync.set({ "whiteUrl": data }, function () {
                     updateUrltoDB('whiteUrl', data);
                 });
-                if (bgpage.block.whiteUrl.length == 3)
-                    $('#whiteList').html("");
-                else
-                    showWhiteList();
             });
-        });
-    });
+        }
+    });    
 }
 
 function spawnLabDeletBtn(element) {
