@@ -1,58 +1,53 @@
 :root {
     --input-padding-x: 1.5rem;
     --input-padding-y: .75rem;
-  }
-  
-  body {
-    /*background: #007bff;
-    background: linear-gradient(to right, #0062E6, #33AEFF);*/
-  }
-  
-  .card-signin {
+}
+
+.card-signin {
     border: 0;
     border-radius: 1rem;
     box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1);
-  }
-  
-  .card-signin .card-title {
+}
+
+.card-signin .card-title {
     margin-bottom: 2rem;
     font-weight: 300;
     font-size: 1.5rem;
-  }
-  
-  .card-signin .card-body {
+}
+
+.card-signin .card-body {
     padding: 2rem;
-  }
-  
-  .form-signin {
+}
+
+.form-signin {
     width: 100%;
-  }
-  
-  .form-signin .btn {
+}
+
+.form-signin .btn {
     font-size: 80%;
     border-radius: 5rem;
     letter-spacing: .1rem;
     font-weight: bold;
     padding: 1rem;
     transition: all 0.2s;
-  }
-  
-  .form-label-group {
+}
+
+.form-label-group {
     position: relative;
     margin-bottom: 1rem;
-  }
-  
-  .form-label-group input {
+}
+
+.form-label-group input {
     height: auto;
     /*border-radius: 2rem;*/
-  }
-  
-  .form-label-group>input,
-  .form-label-group>label {
+}
+
+.form-label-group>input,
+.form-label-group>label {
     padding: var(--input-padding-y) var(--input-padding-x);
-  }
-  
-  .form-label-group>label {
+}
+
+.form-label-group>label {
     position: absolute;
     top: 0;
     left: 0;
@@ -65,134 +60,165 @@
     border: 1px solid transparent;
     border-radius: .25rem;
     transition: all .1s ease-in-out;
-  }
-  
-  .form-label-group input::-webkit-input-placeholder {
+}
+
+.form-label-group input::-webkit-input-placeholder {
     color: transparent;
-  }
-  
-  .form-label-group input:-ms-input-placeholder {
+}
+
+.form-label-group input:-ms-input-placeholder {
     color: transparent;
-  }
-  
-  .form-label-group input::-ms-input-placeholder {
+}
+
+.form-label-group input::-ms-input-placeholder {
     color: transparent;
-  }
-  
-  .form-label-group input::-moz-placeholder {
+}
+
+.form-label-group input::-moz-placeholder {
     color: transparent;
-  }
-  
-  .form-label-group input::placeholder {
+}
+
+.form-label-group input::placeholder {
     color: transparent;
-  }
-  
-  .form-label-group input:not(:placeholder-shown) {
+}
+
+.form-label-group input:not(:placeholder-shown) {
     padding-top: calc(var(--input-padding-y) + var(--input-padding-y) * (2 / 3));
     padding-bottom: calc(var(--input-padding-y) / 3);
-  }
-  
-  .form-label-group input:not(:placeholder-shown)~label {
+}
+
+.form-label-group input:not(:placeholder-shown)~label {
     padding-top: calc(var(--input-padding-y) / 3);
     padding-bottom: calc(var(--input-padding-y) / 3);
     font-size: 12px;
     color: #777;
-  }
-  
-  .btn-google {
+}
+
+.btn-google {
     color: white;
     background-color: #ea4335;
-  }
-  
-  .btn-facebook {
+}
+
+.btn-facebook {
     color: white;
     background-color: #3b5998;
-  }
-  
-  /* Fallback for Edge
+}
+
+
+/* Fallback for Edge
   -------------------------------------------------- */
-  
-  @supports (-ms-ime-align: auto) {
+
+@supports (-ms-ime-align: auto) {
     .form-label-group>label {
-      display: none;
+        display: none;
     }
     .form-label-group input::-ms-input-placeholder {
-      color: #777;
+        color: #777;
     }
-  }
-  
-  /* Fallback for IE
+}
+
+
+/* Fallback for IE
   -------------------------------------------------- */
-  
-  @media all and (-ms-high-contrast: none),
-  (-ms-high-contrast: active) {
+
+@media all and (-ms-high-contrast: none),
+(-ms-high-contrast: active) {
     .form-label-group>label {
-      display: none;
+        display: none;
     }
     .form-label-group input:-ms-input-placeholder {
-      color: #777;
+        color: #777;
     }
-  }
+}
 
-  /* modified by jian
+
+/* modified by jian
   -------------------------------------------------- */
- 
-  #btnLogin:hover {
-    cursor: pointer;
-  }
 
-  /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
-  .row.content {/*height: 1500px*/}
-  
-  /* Set gray background color and 100% height */
-  .sidenav {
+#btnLogin:hover {
+    cursor: pointer;
+}
+
+
+/* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+
+
+/* Set gray background color and 100% height */
+
+.sidenav {
     background-color: #f1f1f1;
     height: 100vh;
-    overflow-y: auto; 
-  }    
-  
-  /* On small screens, set height to 'auto' for sidenav and grid */
-  @media screen and (max-width: 767px) {
+    overflow-y: auto;
+}
+
+
+/* On small screens, set height to 'auto' for sidenav and grid */
+
+@media screen and (max-width: 767px) {
     .sidenav {
-      height: auto;
-      padding: 15px;
+        height: auto;
+        padding: 15px;
     }
-    .row.content {height: auto;} 
-  }
+    .row.content {
+        height: auto;
+    }
+}
 
-  .optionsContent {
+.optionsContent {
     height: 100vh;
-    overflow-y: auto; 
-  }
+    overflow-y: auto;
+}
 
-   /*by Lin
+
+/*by Lin
   -------------------------------------------------- */
-  .menu {
+
+.menu {
     height: 100vh;
     width: 20vw;
     float: left;
-    border:1px #ccc solid;
+    border: 1px #ccc solid;
     box-shadow: -1px 0 20px rgb(0, 0, 0);
-  }
-   
-  .menu .title {
+}
+
+.menu .title {
     width: 100%;
     height: 16%;
-  }
-   
-  .menu .title .min_picture {
+}
+
+.menu .title .min_picture {
     background-image: url('/icon.png');
     background-size: 50px auto;
     height: 50px;
     width: 50px;
     display: inline-block;
-  }
-  
-  ul {
+}
+
+ul {
     list-style: none;
-  }
-    
-  .content {
+}
+
+.content {
     width: 100vw;
     height: 100vh;
-  }
+}
+
+button.btnset:enabled {
+    border: 2px solid rgba(50, 50, 50, 0.05);
+}
+
+button.btnset:focus:enabled {
+    border: 2px solid rgba(50, 50, 50, 0.05)
+}
+
+button.btnset:hover:enabled {
+    border: 2px solid #007bff;
+}
+
+button.btnset:active:enabled {
+    border: 2px solid rgba(50, 50, 50, 0.05)
+}
+
+a.only:hover:enabled {
+    color: #0056b3;
+}

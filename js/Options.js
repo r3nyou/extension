@@ -2,14 +2,19 @@
 
 var storage = chrome.storage.sync;
 var userID;
+var domainNames = ["com", "info", "net", "org", "xyz", "biz", "biz", "name", "pro", "aero", "asia", "cat", "coop", "edu", "gov", "int", "jobs", "mil", "mobi", "museum", "post", "tel", "travel", "xxx"]
 
-function setPWEMtoDB(password, email) {
+function setPWEMtoDB(password_oldPW, email_newPW) {
 
-    chrome.storage.sync.get("id", function (storage) {
+    chrome.storage.sync.get(null, function (storage) {
+        var password = password_oldPW;
+        var oldPW = password_oldPW;
+        var email = email_newPW;
+        var newPW = email_newPW;
         if (storage.id === undefined) {
             alert('userID 不存在');
         } else {
-            if (errInputForPWEM(password, email)) {
+            if (noErrInputForPWEM(password, email) && !bgpage.block.havePW) {
                 var postData = JSON.stringify({
                     "id": storage.id,
                     "password": password,
@@ -28,42 +33,93 @@ function setPWEMtoDB(password, email) {
                         setPWEM($('#password').val(), $('#email').val());
                     }
                 });
+            } else if (noErrInputForPW(oldPW, newPW, storage.password) && bgpage.block.havePW) {
+                var postData = JSON.stringify({
+                    "id": storage.id,
+                    "password": newPW,
+                    "email": storage.email
+                });
+
+                var postUrl = 'http://35.201.195.234/extension_backend/api/user/update.php';
+
+                $.ajax({
+                    type: 'PUT',
+                    dataType: 'json',
+                    url: postUrl,
+                    contentType: 'application/json; charset=UTF-8',
+                    data: postData,
+                    success: function (msg) {
+                        setPWEM($('#oldPW').val(), $('#password').val());
+                    }
+                });
+
             }
         }
     });
 }
 
-function errInputForPWEM(password, email) {
-    if (password == "") {
-        $('#err4PW').html('欄位不能為空');
+function noErrInputForPWEM(password, email) {
+    if (!bgpage.block.havePW) {
+        if (password == "") {
+            $('#err4PW').html('欄位不能為空');
+            var timer = setTimeout(() => {
+                $('#err4PW').html('')
+                clearInterval(timer);
+            }, 3000);
+            return false;
+        }
+        if (email == "") {
+            $('#err4EM').html('欄位不能為空');
+            var timer = setTimeout(() => {
+                $('#err4EM').html('')
+                clearInterval(timer);
+            }, 3000);
+            return false;
+        }
+        if (!/^[0-9A-Za-z]{4,10}$/.test(password)) {
+            //alert('限定英文數字組合，長度4~10');
+            $('#err4PW').html('限定英文數字組合，長度4~10');
+            var timer = setTimeout(() => {
+                $('#err4PW').html('')
+                clearInterval(timer);
+            }, 3000);
+            return false;
+        }
+        var emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
+        if (!emailRule.test(email)) {
+            $('#err4PW').html('E-mail格式錯誤');
+            var timer = setTimeout(() => {
+                $('#err4PW').html('')
+                clearInterval(timer);
+            }, 3000);
+            return false;
+        }
+        return true;
+    }
+}
+
+function noErrInputForPW(oldPW, newPW, storagePassword) {
+    if (oldPW != storagePassword) {
+        $('#err4OldPW').html('與舊密碼不符');
         var timer = setTimeout(() => {
-            $('#err4PW').html('')
+            $('#err4OldPW').html('')
             clearInterval(timer);
         }, 3000);
         return false;
     }
-    if (email == "") {
-        $('#err4EM').html('欄位不能為空');
+    if (newPW == "") {
+        $('#err4NewPW').html('欄位不能為空');
         var timer = setTimeout(() => {
-            $('#err4EM').html('')
+            $('#err4NewPW').html('')
             clearInterval(timer);
         }, 3000);
         return false;
     }
-    if (!/^[0-9A-Za-z]{4,10}$/.test(password)) {
+    if (!/^[0-9A-Za-z]{4,10}$/.test(newPW)) {
         //alert('限定英文數字組合，長度4~10');
-        $('#err4PW').html('限定英文數字組合，長度4~10')
+        $('#err4NewPW').html('限定英文數字組合，長度4~10')
         var timer = setTimeout(() => {
-            $('#err4PW').html('')
-            clearInterval(timer);
-        }, 3000);
-        return false;
-    }
-    var emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
-    if (!emailRule.test(email)) {
-        $('#err4PW').html('E-mail格式錯誤')
-        var timer = setTimeout(() => {
-            $('#err4PW').html('')
+            $('#err4NewPW').html('')
             clearInterval(timer);
         }, 3000);
         return false;
@@ -71,16 +127,49 @@ function errInputForPWEM(password, email) {
     return true;
 }
 
+function setPWEM(password, email_NewPW) {
+    if (!bgpage.block.havePW) {
+        var email = email_NewPW;
+        chrome.storage.sync.set({ "password": password, "email": email }, function () {
+            //alert('password 新增: ' + password + '\n email 新增: ' + email);
+            alert('新增成功!');
+            bgpage.block.havePW = true;
+            $('#password').val("");
+            $('#email').val("");
+            $("#oldPWDiv").css("display", "block");
+            $("#emailDiv").css("display", "none");
+        });
+    } else {
+        var NewPW = email_NewPW;
 
-function setPWEM(password, email) {
-    chrome.storage.sync.set({ "password": password, "email": email }, function () {
-        alert('password 新增: ' + password + '\n email 新增: ' + email);
-        bgpage.block.havePW = true;
-    });
+        chrome.storage.sync.set({ "password": NewPW }, function () {
+            //alert('new password : ' + NewPW);
+            alert('更改成功!');
+            bgpage.block.havePW = true;
+            $('#oldPW').val("");
+            $('#password').val("");
+            $("#oldPWDiv").css("display", "block");
+            $("#emailDiv").css("display", "none");
+        });
+    }
 }
 
 function getPW() {
     chrome.storage.sync.get("password", function (storage) {
+        if (storage.password === undefined) {
+            /*alert('還沒設定密碼');*/
+            $("#loginMode").css("display", "none");
+            $("#optionMode").css("display", "block");
+            $("#blackInput").focus();
+        } else {
+            bgpage.block.havePW = true;
+            if (bgpage.block.needPW) {
+                /*alert('密碼是: ' + storage.password);*/
+                $("#loginMode").css("display", "block");
+                $("#optionMode").css("display", "none");
+                $("#inputPassword").focus();
+            }
+        }
         if (bgpage.block.whiteMode) {
             $("#BWSwitch").css("display", "none");
             $("#BWSwitch4White").css("display", "block");
@@ -96,25 +185,14 @@ function getPW() {
             $("#PWSwitch").css("display", "none");
         }
         if (bgpage.block.havePW) {
+            $("#oldPWDiv").css("display", "block");
+            $("#emailDiv").css("display", "none");
         } else {
             $("#PWSwitch4Off").css("display", "none");
             $("#PWSwitch").css("display", "none");
         }
         showBlackList();
         showWhiteList();
-        if (storage.password === undefined) {
-            /*alert('還沒設定密碼');*/
-            $("#loginMode").css("display", "none");
-            $("#optionMode").css("display", "block");
-            $("#blackInput").focus();
-        } else {
-            if (bgpage.block.needPW) {
-                /*alert('密碼是: ' + storage.password);*/
-                $("#loginMode").css("display", "block");
-                $("#optionMode").css("display", "none");
-                $("#inputPassword").focus();
-            }
-        }
     });
 }
 
@@ -143,6 +221,24 @@ function errInput(add) {
 function setBlackUrl() {
 
     var add = $('#blackInput').val();
+
+    add = add.split("/");
+    if (add.length == 1) {
+        add = add[0];
+    } else {
+        add = add[2].split(".");
+        if (add.length == 1) {
+            var addTemp = add[add.length - 1];
+        } else {
+            var addTemp = add[add.length - 2];
+        }
+
+        if (domainNames.indexOf(addTemp) != -1) {
+            add = add[add.length - 3];
+        } else {
+            add = addTemp;
+        }
+    }
 
     errInput(add);
 
@@ -198,11 +294,11 @@ function setWhiteUrl() {
 
 function removeBlackUrl(url) {
     bgpage.block.blackUrl.splice(bgpage.block.blackUrl.indexOf(url), 1);
-    
+
     let data = JSON.stringify({
         'new list': JSON.stringify(bgpage.block.blackUrl),
         'remove': url,
-    });    
+    });
     bgpage.boardcast('update blackUrl', data);
 }
 
@@ -212,7 +308,7 @@ function removeWhiteUrl(url) {
     let data = JSON.stringify({
         'new list': JSON.stringify(bgpage.block.blackUrl),
         'remove': url,
-    });    
+    });
     bgpage.boardcast('update whiteUrl', data);
 }
 
@@ -262,7 +358,7 @@ function showWhiteList() {
     });
 }
 
-function spawnLabDeletBtn(element) {    
+function spawnLabDeletBtn(element) {
     // var str = "<tr><td></td><td>" + element + "</td><td></td><td></td><td>";
     var str = "<tr><td colspan='4'>" + element + "</td><td>";
     str += '<button data-toggle="tooltip" id="' + element + '" title="" class="pd-setting-ed"data-original-title="Trash"><i class="fa fa-trash-o"aria-hidden="true"></i></button></td></tr>';
@@ -333,14 +429,22 @@ $('#whiteInput').keydown((e) => {
     }
 });
 
-$('#btnSet').keydown((e) => {
+$('#oldPW,#password,#email').keydown((e) => {
     if (e.code == "Enter") {
-        setPWEMtoDB($('#password').val(), $('#email').val());
+        if (!bgpage.block.havePW) {
+            setPWEMtoDB($('#password').val(), $('#email').val());
+        } else {
+            setPWEMtoDB($('#oldPW').val(), $('#password').val());
+        }
     }
 });
 
 $('#btnSet').click(function () {
-    setPWEMtoDB($('#password').val(), $('#email').val());
+    if (!bgpage.block.havePW) {
+        setPWEMtoDB($('#password').val(), $('#email').val());
+    } else {
+        setPWEMtoDB($('#oldPW').val(), $('#password').val());
+    }
 });
 
 $('#btnClear').click(function () {
@@ -364,7 +468,7 @@ getPW();
 
 chrome.storage.onChanged.addListener(function (changes, namespace) {
     for (key in changes) {
-        switch(key) {
+        switch (key) {
             case 'blackUrl':
                 showBlackList();
                 break;
@@ -427,11 +531,11 @@ function needPWSwitch() {
 }
 
 /** forget password */
-$("#forget").on("click", function() {
+$("#forget").on("click", function () {
     chrome.storage.sync.get("id", function (storage) {
-        if(storage.id) {
-            var getUrl = 'http://35.201.195.234/extension_backend/api/user/get_password.php?id='+storage.id;
-            $.get(getUrl, function(data){
+        if (storage.id) {
+            var getUrl = 'http://35.201.195.234/extension_backend/api/user/get_password.php?id=' + storage.id;
+            $.get(getUrl, function (data) {
                 //console.log(data);
                 sentMail(data.email, data.password)
             });
@@ -440,8 +544,8 @@ $("#forget").on("click", function() {
 });
 
 function sentMail(email, password) {
-    var getUrl = 'http://104.199.202.192/mailer/sendMail.php?password='+ password +'&email=' + email;
-    $.get(getUrl, function(data){        
+    var getUrl = 'http://104.199.202.192/mailer/sendMail.php?password=' + password + '&email=' + email;
+    $.get(getUrl, function (data) {
     });
     alert('請至信箱確認');
 }
