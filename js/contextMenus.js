@@ -38,6 +38,13 @@ class ContextMenus {
                     chrome.storage.sync.set({ "blackUrl": data }, function () {
                         updateUrltoDB('blackUrl', data);
                     });
+
+                    const bgpage = chrome.extension.getBackgroundPage();
+                    let list = JSON.stringify({
+                        'new list': data,
+                        'add': tabArray,
+                    });
+                    bgpage.boardcast('add blackUrl', list);
                 } else {
                     alert('已存在於白名單中!');
                 }
@@ -79,6 +86,13 @@ class ContextMenus {
                     chrome.storage.sync.set({ "whiteUrl": data }, function () {
                         updateUrltoDB('whiteUrl', data);
                     });
+
+                    const bgpage = chrome.extension.getBackgroundPage();
+                    let list = JSON.stringify({
+                        'new list': data,
+                        'add': tabArray,
+                    });
+                    bgpage.boardcast('add whiteUrl', list);
                 } else {
                     alert('已存在於白名單中!');
                 }
